@@ -1,0 +1,21 @@
+[phases.setup]
+pkgs = [
+    "php84",
+    "php84Extensions.pdo",
+    "php84Extensions.pdo_mysql",
+    "php84Extensions.mbstring",
+    "php84Extensions.curl",
+    "composer",
+    "nodejs",
+    "npm"
+]
+
+[phases.build]
+cmds = [
+    "npm install",
+    "npm run build",
+    "composer install --no-dev --optimize-autoloader --no-interaction"
+]
+
+[start]
+cmd = "php artisan config:cache && php artisan route:cache && php artisan view:cache && php artisan migrate --force && php -S 0.0.0.0:$PORT -t public"
