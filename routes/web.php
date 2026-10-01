@@ -116,4 +116,54 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/admin/pengaturan/reset', [PengaturanController::class, 'resetDatabase'])->name('admin.pengaturan.reset');
 });
 
+// Setup / Diagnostic Route for production admin initialization
+Route::get('/init-admin', function () {
+    try {
+        \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+        
+        \App\Models\User::updateOrCreate(
+            ['username' => 'admin'],
+            [
+                'name' => 'Administrator',
+                'email' => 'admin@epradana.com',
+                'password' => \Illuminate\Support\Facades\Hash::make('admin123'),
+            ]
+        );
+
+        if (!\Illuminate\Support\Facades\DB::table('settings')->where('id', 1)->exists()) {
+            \Illuminate\Support\Facades\DB::table('settings')->insert([
+                'id' => 1,
+                'status' => 'draft',
+                'schedule_enabled' => 0,
+                'manual_override' => 0,
+                'results_revealed' => 0,
+                'allow_blank' => 0,
+                'updated_at' => now(),
+            ]);
+        }
+
+        $userCount = \App\Models\User::count();
+        $dbDriver = config('database.default');
+        $dbHost = config("database.connections.{$dbDriver}.host", 'sqlite');
+        $dbName = config("database.connections.{$dbDriver}.database", 'sqlite');
+
+        return response()->json([
+            'status' => 'SUCCESS',
+            'message' => 'Admin berhasil dibuat/diperbarui!',
+            'driver' => $dbDriver,
+            'database' => $dbName,
+            'host' => $dbHost,
+            'admin_username' => 'admin',
+            'admin_password' => 'admin123',
+            'total_users' => $userCount,
+        ]);
+    } catch (\Throwable $e) {
+        return response()->json([
+            'status' => 'ERROR',
+            'message' => $e->getMessage(),
+            'driver' => config('database.default'),
+        ], 500);
+    }
+});
+
 require __DIR__.'/settings.php';

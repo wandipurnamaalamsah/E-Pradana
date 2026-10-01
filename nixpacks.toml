@@ -3,6 +3,7 @@ pkgs = [
     "php84",
     "php84Extensions.pdo",
     "php84Extensions.pdo_mysql",
+    "php84Extensions.pdo_sqlite",
     "php84Extensions.mbstring",
     "php84Extensions.curl",
     "composer",
