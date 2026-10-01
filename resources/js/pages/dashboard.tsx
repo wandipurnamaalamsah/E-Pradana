@@ -78,9 +78,9 @@ const statusConfig = {
     rehearsal: {
         label: 'Gladi Bersih',
         desc: 'Mode simulasi latihan pemilihan',
-        color: '#1D4ED8',
-        bg: '#EFF6FF',
-        dot: '#3B82F6',
+        color: '#8B5A2B',
+        bg: '#F5EFE6',
+        dot: '#8B5A2B',
     },
     open: {
         label: 'Pemilihan Berlangsung (Live)',
@@ -107,22 +107,22 @@ const antiFomoGrayShades = [
     '#374151', // Slate 700
 ];
 
-// Palet warna Reveal Mode Putra (Warna Identitas Kandidat Khas Pramuka)
+// Palet warna Reveal Mode Putra & Putri (Warna Identitas Khas Standar Pramuka Coklat & Emas)
 const revealPutraColors = [
     '#D4AF37', // Emas Juara
-    '#1D4ED8', // Biru Bahari
-    '#2D5A27', // Hijau Pandu
     '#8B5A2B', // Coklat Kulit
-    '#0284C7', // Biru Langit
+    '#2D5A27', // Hijau Pandu
+    '#A0522D', // Coklat Sienna
+    '#6F4423', // Coklat Tua Pramuka
 ];
 
 // Palet warna Reveal Mode Putri
 const revealPutriColors = [
     '#D4AF37', // Emas Juara
-    '#BE185D', // Rose Magenta
+    '#92400E', // Coklat Karamel Pramuka
     '#8B5A2B', // Coklat Ambalan
-    '#059669', // Zamrud
-    '#D97706', // Amber Hangat
+    '#2D5A27', // Hijau Pandu
+    '#B45309', // Amber Coklat
 ];
 
 /**
@@ -198,8 +198,7 @@ function MultiCandidateDonut({
                         href="/admin/kandidat"
                         className="inline-flex items-center gap-1.5 rounded-xl px-4 py-2 text-xs font-bold text-white shadow-xs transition-transform hover:scale-105 active:scale-95"
                         style={{
-                            background:
-                                category === 'putra' ? '#1D4ED8' : '#BE185D',
+                            background: '#8B5A2B',
                         }}
                     >
                         <Plus className="h-3.5 w-3.5" />
@@ -368,9 +367,9 @@ function MultiCandidateDonut({
                     </svg>
                 </motion.div>
 
-                {/* ── BAGIAN TENGAH: LOGO PRAMUKA ── */}
+                {/* ── BAGIAN TENGAH: EMOJI FLEUR-DE-LIS PRAMUKA ── */}
                 <div
-                    className="pointer-events-none absolute flex items-center justify-center rounded-full"
+                    className="pointer-events-none absolute flex items-center justify-center rounded-full select-none"
                     style={{
                         width: size - strokeWidth * 2 - 4,
                         height: size - strokeWidth * 2 - 4,
@@ -379,63 +378,13 @@ function MultiCandidateDonut({
                         boxShadow: 'inset 0 2px 6px rgba(0,0,0,0.06)',
                     }}
                 >
-                    {/* Logo Pramuka Trefoil */}
-                    <svg
-                        viewBox="0 0 64 64"
-                        width="52"
-                        height="52"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
+                    <span
+                        className="text-5xl drop-shadow-xs transition-transform duration-300"
+                        role="img"
+                        aria-label="Logo Pramuka"
                     >
-                        <g fill="#2D5A27">
-                            {/* Kelopak kiri */}
-                            <ellipse
-                                cx="20"
-                                cy="20"
-                                rx="9"
-                                ry="14"
-                                transform="rotate(-30 20 20)"
-                                opacity="0.9"
-                            />
-                            {/* Kelopak kanan */}
-                            <ellipse
-                                cx="44"
-                                cy="20"
-                                rx="9"
-                                ry="14"
-                                transform="rotate(30 44 20)"
-                                opacity="0.9"
-                            />
-                            {/* Kelopak tengah (atas) */}
-                            <ellipse
-                                cx="32"
-                                cy="14"
-                                rx="9"
-                                ry="14"
-                                opacity="0.9"
-                            />
-                        </g>
-                        {/* Lingkaran tengah emas */}
-                        <circle cx="32" cy="32" r="7.5" fill="#8B5A2B" />
-                        <circle cx="32" cy="32" r="5" fill="#D4AF37" />
-                        {/* Batang bawah */}
-                        <rect
-                            x="28.5"
-                            y="42"
-                            width="7"
-                            height="11"
-                            rx="2"
-                            fill="#2D5A27"
-                        />
-                        <rect
-                            x="22"
-                            y="51"
-                            width="20"
-                            height="4"
-                            rx="2"
-                            fill="#2D5A27"
-                        />
-                    </svg>
+                        ⚜️
+                    </span>
                 </div>
 
                 {/* ── TOOLTIP FLOATING PRESENTASI RESMI ── */}
@@ -1484,7 +1433,7 @@ export default function Dashboard({
                         style={{
                             background: '#fff',
                             border: results_revealed
-                                ? '2px solid #1D4ED835'
+                                ? '2px solid #8B5A2B50'
                                 : '1px solid #E8D9C4',
                         }}
                     >
@@ -1496,72 +1445,13 @@ export default function Dashboard({
                             >
                                 <div className="flex items-center gap-3">
                                     <div
-                                        className="flex h-11 w-11 items-center justify-center rounded-xl shadow-xs"
+                                        className="flex h-11 w-11 items-center justify-center rounded-xl shadow-xs text-2xl select-none"
                                         style={{
                                             background:
-                                                'linear-gradient(135deg, #2D5A27, #4A8B3F)',
+                                                'linear-gradient(135deg, #8B5A2B, #6F4423)',
                                         }}
                                     >
-                                        {/* Logo Pramuka - Trefoil */}
-                                        <svg
-                                            viewBox="0 0 64 64"
-                                            width="26"
-                                            height="26"
-                                            fill="none"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                        >
-                                            <g fill="#D4AF37">
-                                                <ellipse
-                                                    cx="20"
-                                                    cy="20"
-                                                    rx="9"
-                                                    ry="14"
-                                                    transform="rotate(-30 20 20)"
-                                                    opacity="0.95"
-                                                />
-                                                <ellipse
-                                                    cx="44"
-                                                    cy="20"
-                                                    rx="9"
-                                                    ry="14"
-                                                    transform="rotate(30 44 20)"
-                                                    opacity="0.95"
-                                                />
-                                                <ellipse
-                                                    cx="32"
-                                                    cy="14"
-                                                    rx="9"
-                                                    ry="14"
-                                                    opacity="0.95"
-                                                />
-                                                <circle
-                                                    cx="32"
-                                                    cy="32"
-                                                    r="7"
-                                                    fill="#2D5A27"
-                                                />
-                                                <circle
-                                                    cx="32"
-                                                    cy="32"
-                                                    r="4.5"
-                                                    fill="#D4AF37"
-                                                />
-                                                <rect
-                                                    x="28"
-                                                    y="42"
-                                                    width="8"
-                                                    height="12"
-                                                    rx="2"
-                                                />
-                                                <rect
-                                                    x="22"
-                                                    y="52"
-                                                    width="20"
-                                                    height="4"
-                                                    rx="2"
-                                                />
-                                            </g>
-                                        </svg>
+                                        <span role="img" aria-label="Logo Pramuka">⚜️</span>
                                     </div>
                                     <div>
                                         <div className="flex items-center gap-2">
@@ -1582,7 +1472,7 @@ export default function Dashboard({
                                                         style={{
                                                             backgroundColor:
                                                                 results_revealed
-                                                                    ? '#1D4ED8'
+                                                                    ? '#8B5A2B'
                                                                     : '#D4AF37',
                                                         }}
                                                     />
@@ -1591,7 +1481,7 @@ export default function Dashboard({
                                                         style={{
                                                             backgroundColor:
                                                                 results_revealed
-                                                                    ? '#1D4ED8'
+                                                                    ? '#8B5A2B'
                                                                     : '#D4AF37',
                                                         }}
                                                     />
@@ -1608,7 +1498,7 @@ export default function Dashboard({
                                                 initial={{
                                                     scale: 1.18,
                                                     color: results_revealed
-                                                        ? '#1D4ED8'
+                                                        ? '#8B5A2B'
                                                         : '#4A2E1B',
                                                 }}
                                                 animate={{
@@ -1630,12 +1520,12 @@ export default function Dashboard({
                                         className="rounded-full px-3 py-1 text-xs font-bold"
                                         style={{
                                             background: results_revealed
-                                                ? '#EFF6FF'
+                                                ? '#F5EFE6'
                                                 : '#F1F5F9',
                                             color: results_revealed
-                                                ? '#1D4ED8'
+                                                ? '#8B5A2B'
                                                 : '#64748B',
-                                            border: `1px solid ${results_revealed ? '#BFDBFE' : '#CBD5E1'}`,
+                                            border: `1px solid ${results_revealed ? '#E8D9C4' : '#CBD5E1'}`,
                                         }}
                                     >
                                         {candidates_putra.length} Kandidat
@@ -1680,7 +1570,7 @@ export default function Dashboard({
                         style={{
                             background: '#fff',
                             border: results_revealed
-                                ? '2px solid #BE185D35'
+                                ? '2px solid #8B5A2B50'
                                 : '1px solid #E8D9C4',
                         }}
                     >
@@ -1692,72 +1582,13 @@ export default function Dashboard({
                             >
                                 <div className="flex items-center gap-3">
                                     <div
-                                        className="flex h-11 w-11 items-center justify-center rounded-xl shadow-xs"
+                                        className="flex h-11 w-11 items-center justify-center rounded-xl shadow-xs text-2xl select-none"
                                         style={{
                                             background:
-                                                'linear-gradient(135deg, #2D5A27, #4A8B3F)',
+                                                'linear-gradient(135deg, #8B5A2B, #6F4423)',
                                         }}
                                     >
-                                        {/* Logo Pramuka - Trefoil */}
-                                        <svg
-                                            viewBox="0 0 64 64"
-                                            width="26"
-                                            height="26"
-                                            fill="none"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                        >
-                                            <g fill="#D4AF37">
-                                                <ellipse
-                                                    cx="20"
-                                                    cy="20"
-                                                    rx="9"
-                                                    ry="14"
-                                                    transform="rotate(-30 20 20)"
-                                                    opacity="0.95"
-                                                />
-                                                <ellipse
-                                                    cx="44"
-                                                    cy="20"
-                                                    rx="9"
-                                                    ry="14"
-                                                    transform="rotate(30 44 20)"
-                                                    opacity="0.95"
-                                                />
-                                                <ellipse
-                                                    cx="32"
-                                                    cy="14"
-                                                    rx="9"
-                                                    ry="14"
-                                                    opacity="0.95"
-                                                />
-                                                <circle
-                                                    cx="32"
-                                                    cy="32"
-                                                    r="7"
-                                                    fill="#2D5A27"
-                                                />
-                                                <circle
-                                                    cx="32"
-                                                    cy="32"
-                                                    r="4.5"
-                                                    fill="#D4AF37"
-                                                />
-                                                <rect
-                                                    x="28"
-                                                    y="42"
-                                                    width="8"
-                                                    height="12"
-                                                    rx="2"
-                                                />
-                                                <rect
-                                                    x="22"
-                                                    y="52"
-                                                    width="20"
-                                                    height="4"
-                                                    rx="2"
-                                                />
-                                            </g>
-                                        </svg>
+                                        <span role="img" aria-label="Logo Pramuka">⚜️</span>
                                     </div>
                                     <div>
                                         <div className="flex items-center gap-2">
@@ -1778,7 +1609,7 @@ export default function Dashboard({
                                                         style={{
                                                             backgroundColor:
                                                                 results_revealed
-                                                                    ? '#BE185D'
+                                                                    ? '#8B5A2B'
                                                                     : '#D4AF37',
                                                         }}
                                                     />
@@ -1787,7 +1618,7 @@ export default function Dashboard({
                                                         style={{
                                                             backgroundColor:
                                                                 results_revealed
-                                                                    ? '#BE185D'
+                                                                    ? '#8B5A2B'
                                                                     : '#D4AF37',
                                                         }}
                                                     />
@@ -1804,7 +1635,7 @@ export default function Dashboard({
                                                 initial={{
                                                     scale: 1.18,
                                                     color: results_revealed
-                                                        ? '#BE185D'
+                                                        ? '#8B5A2B'
                                                         : '#4A2E1B',
                                                 }}
                                                 animate={{
@@ -1826,12 +1657,12 @@ export default function Dashboard({
                                         className="rounded-full px-3 py-1 text-xs font-bold"
                                         style={{
                                             background: results_revealed
-                                                ? '#FDF2F8'
+                                                ? '#F5EFE6'
                                                 : '#F1F5F9',
                                             color: results_revealed
-                                                ? '#BE185D'
+                                                ? '#8B5A2B'
                                                 : '#64748B',
-                                            border: `1px solid ${results_revealed ? '#FBCFE8' : '#CBD5E1'}`,
+                                            border: `1px solid ${results_revealed ? '#E8D9C4' : '#CBD5E1'}`,
                                         }}
                                     >
                                         {candidates_putri.length} Kandidat
@@ -1992,7 +1823,7 @@ export default function Dashboard({
                                 className="relative my-4 flex h-20 w-20 items-center justify-center overflow-hidden rounded-2xl shadow-md"
                                 style={{
                                     background:
-                                        'linear-gradient(135deg, #1D4ED8 0%, #3B82F6 100%)',
+                                        'linear-gradient(135deg, #6F4423 0%, #8B5A2B 100%)',
                                     border: '3px solid #D4AF37',
                                 }}
                             >
@@ -2046,7 +1877,7 @@ export default function Dashboard({
                             className="relative flex flex-col items-center rounded-2xl p-5 text-center shadow-lg transition-transform hover:scale-[1.02]"
                             style={{
                                 background:
-                                    'linear-gradient(135deg, rgba(190, 24, 93, 0.15) 0%, rgba(212, 175, 55, 0.1) 100%)',
+                                    'linear-gradient(135deg, rgba(139, 90, 43, 0.15) 0%, rgba(212, 175, 55, 0.1) 100%)',
                                 border: '1.5px solid #D4AF37',
                             }}
                         >
@@ -2065,7 +1896,7 @@ export default function Dashboard({
                                 className="relative my-4 flex h-20 w-20 items-center justify-center overflow-hidden rounded-2xl shadow-md"
                                 style={{
                                     background:
-                                        'linear-gradient(135deg, #BE185D 0%, #FB7185 100%)',
+                                        'linear-gradient(135deg, #8B5A2B 0%, #A77B4A 100%)',
                                     border: '3px solid #D4AF37',
                                 }}
                             >

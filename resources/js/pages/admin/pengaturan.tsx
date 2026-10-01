@@ -56,9 +56,9 @@ const statusLabels: Record<
     },
     rehearsal: {
         label: 'Gladi Bersih',
-        color: '#1D4ED8',
-        bg: '#EFF6FF',
-        border: '#BFDBFE',
+        color: '#8B5A2B',
+        bg: '#F5EFE6',
+        border: '#E8D9C4',
     },
     open: {
         label: 'Pemilihan Berlangsung (Open)',
@@ -458,7 +458,7 @@ export default function PengaturanPage({
                                 className="mb-4 flex items-center gap-3 border-b pb-4"
                                 style={{ borderColor: '#E8D9C4' }}
                             >
-                                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-50 text-blue-700">
+                                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#F5EFE6] text-[#8B5A2B]">
                                     <Shield className="h-5 w-5" />
                                 </div>
                                 <div>
@@ -541,8 +541,8 @@ export default function PengaturanPage({
                                         }
                                         className={`flex items-center justify-center gap-1.5 rounded-xl border py-2.5 text-xs font-bold transition-all ${
                                             settings.status === 'rehearsal'
-                                                ? 'border-blue-300 bg-blue-100 text-blue-900'
-                                                : 'border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100'
+                                                ? 'border-[#8B5A2B] bg-[#F5EFE6] text-[#4A2E1B]'
+                                                : 'border-[#E8D9C4] bg-white text-[#8B5A2B] hover:bg-[#F5EFE6]'
                                         }`}
                                     >
                                         Gladi Bersih

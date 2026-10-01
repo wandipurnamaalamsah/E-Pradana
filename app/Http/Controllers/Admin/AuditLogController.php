@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
@@ -41,7 +42,8 @@ class AuditLogController extends Controller
             $query->where('audit_logs.action', $actionFilter);
         }
 
-        $logs = $query->paginate(20)->withQueryString();
+        // Tampilkan 10 aktivitas terakhir per halaman
+        $logs = $query->paginate(10)->withQueryString();
 
         // Transform meta JSON to array if string
         $logs->getCollection()->transform(function ($item) {
@@ -62,6 +64,9 @@ class AuditLogController extends Controller
             'add_voter' => 'Tambah Pemilih DPT',
             'import_dpt' => 'Impor DPT Massal',
             'reset_token' => 'Reset Token Pemilih',
+            'reset_voter_status' => 'Reset Status Pemilih',
+            'reset_dpt_status' => 'Reset Status DPT Massal',
+            'reset_all_tokens' => 'Acak Ulang Seluruh Token',
             'update_schedule' => 'Ubah Jadwal',
             'update_settings' => 'Ubah Pengaturan',
             'reset_database' => 'Reset Database',
@@ -83,5 +88,26 @@ class AuditLogController extends Controller
             ],
             'available_actions' => $availableActions,
         ]);
+    }
+
+    public function destroy(int $id): RedirectResponse
+    {
+        $log = DB::table('audit_logs')->where('id', $id)->first();
+        if (!$log) {
+            return back()->with('error', 'Log aktivitas tidak ditemukan!');
+        }
+
+        DB::table('audit_logs')->where('id', $id)->delete();
+
+        return back()->with('success', 'Catatan rekam jejak audit log berhasil dihapus!');
+    }
+
+    public function destroyAll(): RedirectResponse
+    {
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        DB::table('audit_logs')->truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
+        return back()->with('success', 'Seluruh rekam jejak audit log berhasil dibersihkan!');
     }
 }

@@ -12,6 +12,9 @@ import {
     AlertCircle,
     X,
     FileSpreadsheet,
+    RotateCcw,
+    ShieldAlert,
+    CheckCircle2,
 } from 'lucide-react';
 import {
     Dialog,
@@ -98,6 +101,11 @@ export default function DptPage({
     const [isImportOpen, setIsImportOpen] = useState(false);
     const [importText, setImportText] = useState('');
     const [importFile, setImportFile] = useState<File | null>(null);
+
+    // State Modal Reset Manajemen DPT
+    const [isResetModalOpen, setIsResetModalOpen] = useState(false);
+    const [resetType, setResetType] = useState<'status' | 'tokens' | 'clear'>('status');
+    const [resetClassScope, setResetClassScope] = useState<string>('all');
 
     // State Modal Konfirmasi DPT
     const [confirmModal, setConfirmModal] = useState<{
@@ -206,6 +214,89 @@ export default function DptPage({
                 );
             },
         });
+    };
+
+    // Reset Status Hak Suara Individu (Kembalikan ke 'Belum Memilih')
+    const handleResetStatusIndividual = (voter: Voter) => {
+        setConfirmModal({
+            open: true,
+            title: 'Reset Status Hak Suara?',
+            description: `Status hak suara untuk "${voter.name}" (${voter.username}) akan dikembalikan menjadi "Belum Memilih". Pemilih dapat kembali login dan menyalurkan hak suaranya di bilik suara.`,
+            confirmText: 'Ya, Reset Status',
+            variant: 'warning',
+            action: () => {
+                router.post(
+                    `/admin/dpt/${voter.id}/reset-status`,
+                    {},
+                    {
+                        onSuccess: () =>
+                            toast.success(
+                                `Status hak suara untuk ${voter.name} berhasil direset!`,
+                            ),
+                    },
+                );
+            },
+        });
+    };
+
+    // Eksekusi dari Modal Pusat Reset DPT
+    const handleExecuteReset = () => {
+        if (resetType === 'status') {
+            const scopeText =
+                resetClassScope === 'all'
+                    ? 'seluruh siswa DPT'
+                    : `siswa Kelas ${resetClassScope}`;
+            setConfirmModal({
+                open: true,
+                title: 'Reset Status Hak Suara DPT?',
+                description: `PERHATIAN: Status hak suara pemilih (${scopeText}) yang telah tercatat "Sudah Memilih" akan dikembalikan menjadi "Belum Memilih". Siswa dapat kembali menggunakan hak suara di bilik suara.`,
+                confirmText: 'Ya, Reset Hak Suara',
+                variant: 'warning',
+                action: () => {
+                    router.post(
+                        '/admin/dpt/reset-status',
+                        { class: resetClassScope },
+                        {
+                            onSuccess: () => {
+                                setIsResetModalOpen(false);
+                                toast.success(
+                                    `Status hak suara ${scopeText} berhasil direset!`,
+                                );
+                            },
+                        },
+                    );
+                },
+            });
+        } else if (resetType === 'tokens') {
+            const scopeText =
+                resetClassScope === 'all'
+                    ? 'seluruh siswa DPT'
+                    : `siswa Kelas ${resetClassScope}`;
+            setConfirmModal({
+                open: true,
+                title: 'Reset & Acak Ulang Token Akses?',
+                description: `PERINGATAN: Seluruh token akses login untuk (${scopeText}) akan digantikan dengan token acak 6 karakter baru. Token yang telah dicetak atau dibagikan sebelumnya otomatis tidak akan berlaku lagi!`,
+                confirmText: 'Ya, Acak Ulang Token',
+                variant: 'warning',
+                action: () => {
+                    router.post(
+                        '/admin/dpt/reset-tokens',
+                        { class: resetClassScope },
+                        {
+                            onSuccess: () => {
+                                setIsResetModalOpen(false);
+                                toast.success(
+                                    `Token akses untuk ${scopeText} berhasil di-reset dan diacak ulang!`,
+                                );
+                            },
+                        },
+                    );
+                },
+            });
+        } else if (resetType === 'clear') {
+            setIsResetModalOpen(false);
+            handleDeleteAll();
+        }
     };
 
     // Delete Voter
@@ -321,6 +412,20 @@ export default function DptPage({
 
                         {voters.total > 0 && (
                             <>
+                                <button
+                                    onClick={() => setIsResetModalOpen(true)}
+                                    className="flex items-center gap-1.5 rounded-xl px-3.5 py-2.5 text-xs font-bold transition-all hover:bg-amber-50"
+                                    style={{
+                                        background: '#fff',
+                                        border: '1.5px solid #D4AF37',
+                                        color: '#8B5A2B',
+                                    }}
+                                    title="Pusat Reset Manajemen DPT (Status Hak Suara, Token Akses, atau Kosongkan Data)"
+                                >
+                                    <RotateCcw className="h-4 w-4 text-[#D4AF37]" />
+                                    <span>Reset DPT</span>
+                                </button>
+
                                 <button
                                     onClick={() => window.print()}
                                     className="flex items-center gap-1.5 rounded-xl px-3.5 py-2.5 text-xs font-bold transition-all hover:bg-[#F5EFE6]"
@@ -639,6 +744,21 @@ export default function DptPage({
 
                                     {/* Aksi */}
                                     <div className="col-span-1 flex items-center justify-end gap-1">
+                                        {/* Reset Status Hak Suara (Jika Sudah Memilih) */}
+                                        {voter.has_voted === 1 && (
+                                            <button
+                                                onClick={() =>
+                                                    handleResetStatusIndividual(
+                                                        voter,
+                                                    )
+                                                }
+                                                className="rounded-lg p-1.5 text-emerald-700 transition-colors hover:bg-emerald-50"
+                                                title="Reset status hak suara (jadikan Belum Memilih kembali)"
+                                            >
+                                                <RotateCcw className="h-3.5 w-3.5" />
+                                            </button>
+                                        )}
+
                                         {/* Reset Token */}
                                         <button
                                             onClick={() =>
@@ -655,7 +775,7 @@ export default function DptPage({
                                             onClick={() =>
                                                 handleOpenEdit(voter)
                                             }
-                                            className="rounded-lg p-1.5 text-blue-600 transition-colors hover:bg-blue-50"
+                                            className="rounded-lg p-1.5 text-[#8B5A2B] transition-colors hover:bg-[#F5EFE6]"
                                             title="Edit Data Pemilih"
                                         >
                                             <Edit2 className="h-3.5 w-3.5" />
@@ -1195,6 +1315,214 @@ export default function DptPage({
                             </button>
                         </div>
                     </form>
+                </DialogContent>
+            </Dialog>
+
+            {/* ── MODAL PUSAT RESET MANAJEMEN DPT ── */}
+            <Dialog open={isResetModalOpen} onOpenChange={setIsResetModalOpen}>
+                <DialogContent
+                    className="max-w-xl rounded-3xl p-6"
+                    style={{ background: '#fff', border: '1.5px solid #E8D9C4' }}
+                >
+                    <DialogHeader>
+                        <div className="flex items-center gap-3">
+                            <div
+                                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl shadow-xs"
+                                style={{
+                                    background: 'linear-gradient(135deg, #4A2E1B 0%, #2D1A0A 100%)',
+                                    color: '#D4AF37',
+                                }}
+                            >
+                                <RotateCcw className="h-5 w-5" />
+                            </div>
+                            <div>
+                                <DialogTitle
+                                    className="text-xl font-black"
+                                    style={{ color: '#4A2E1B' }}
+                                >
+                                    Pusat Reset Manajemen DPT
+                                </DialogTitle>
+                                <DialogDescription className="text-xs text-[#8B5A2B]">
+                                    Pilih opsi reset data pemilih sesuai kebutuhan simulasi, pergantian sesi, atau pembaruan token.
+                                </DialogDescription>
+                            </div>
+                        </div>
+                    </DialogHeader>
+
+                    <div className="mt-4 space-y-3.5">
+                        {/* Pilihan 1: Reset Status Hak Suara */}
+                        <div
+                            onClick={() => setResetType('status')}
+                            className={`cursor-pointer rounded-2xl p-4 transition-all ${
+                                resetType === 'status'
+                                    ? 'border-2 border-[#D4AF37] bg-[#FAF6F0] shadow-sm'
+                                    : 'border border-[#E8D9C4] bg-white hover:bg-[#FDFBF7]'
+                            }`}
+                        >
+                            <div className="flex items-start gap-3">
+                                <div
+                                    className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl text-sm font-black ${
+                                        resetType === 'status'
+                                            ? 'bg-[#4A2E1B] text-[#D4AF37]'
+                                            : 'bg-[#F5EFE6] text-[#8B5A2B]'
+                                    }`}
+                                >
+                                    <RotateCcw className="h-4 w-4" />
+                                </div>
+                                <div className="min-w-0 flex-1">
+                                    <div className="flex items-center justify-between">
+                                        <p className="text-xs font-black text-[#4A2E1B]">
+                                            1. Reset Status Hak Suara (Gladi / Pemilihan Ulang)
+                                        </p>
+                                        <input
+                                            type="radio"
+                                            name="reset_type"
+                                            checked={resetType === 'status'}
+                                            onChange={() => setResetType('status')}
+                                            className="accent-[#4A2E1B]"
+                                        />
+                                    </div>
+                                    <p className="mt-1 text-[11px] leading-relaxed text-[#8B5A2B]">
+                                        Mengembalikan status seluruh pemilih yang telah tercatat <strong>&ldquo;Sudah Memilih&rdquo;</strong> menjadi <strong>&ldquo;Belum Memilih&rdquo;</strong>. Data nama, kelas, username, dan token tetap utuh tidak berubah.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Pilihan 2: Reset & Acak Ulang Token Akses */}
+                        <div
+                            onClick={() => setResetType('tokens')}
+                            className={`cursor-pointer rounded-2xl p-4 transition-all ${
+                                resetType === 'tokens'
+                                    ? 'border-2 border-[#D4AF37] bg-[#FAF6F0] shadow-sm'
+                                    : 'border border-[#E8D9C4] bg-white hover:bg-[#FDFBF7]'
+                            }`}
+                        >
+                            <div className="flex items-start gap-3">
+                                <div
+                                    className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl text-sm font-black ${
+                                        resetType === 'tokens'
+                                            ? 'bg-[#4A2E1B] text-[#D4AF37]'
+                                            : 'bg-[#F5EFE6] text-[#8B5A2B]'
+                                    }`}
+                                >
+                                    <KeyRound className="h-4 w-4" />
+                                </div>
+                                <div className="min-w-0 flex-1">
+                                    <div className="flex items-center justify-between">
+                                        <p className="text-xs font-black text-[#4A2E1B]">
+                                            2. Reset & Acak Ulang Token Akses Login
+                                        </p>
+                                        <input
+                                            type="radio"
+                                            name="reset_type"
+                                            checked={resetType === 'tokens'}
+                                            onChange={() => setResetType('tokens')}
+                                            className="accent-[#4A2E1B]"
+                                        />
+                                    </div>
+                                    <p className="mt-1 text-[11px] leading-relaxed text-[#8B5A2B]">
+                                        Menghasilkan <strong>token login 6 karakter baru</strong> secara otomatis. Token lama yang pernah dibagikan atau dicetak tidak akan dapat digunakan lagi.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Pilihan 3: Kosongkan Seluruh Data DPT */}
+                        <div
+                            onClick={() => setResetType('clear')}
+                            className={`cursor-pointer rounded-2xl p-4 transition-all ${
+                                resetType === 'clear'
+                                    ? 'border-2 border-rose-500 bg-rose-50/50 shadow-sm'
+                                    : 'border border-[#E8D9C4] bg-white hover:bg-rose-50/20'
+                            }`}
+                        >
+                            <div className="flex items-start gap-3">
+                                <div
+                                    className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl text-sm font-black ${
+                                        resetType === 'clear'
+                                            ? 'bg-rose-600 text-white'
+                                            : 'bg-rose-100 text-rose-600'
+                                    }`}
+                                >
+                                    <Trash2 className="h-4 w-4" />
+                                </div>
+                                <div className="min-w-0 flex-1">
+                                    <div className="flex items-center justify-between">
+                                        <p className="text-xs font-black text-rose-700">
+                                            3. Kosongkan Seluruh Rekaman Data DPT
+                                        </p>
+                                        <input
+                                            type="radio"
+                                            name="reset_type"
+                                            checked={resetType === 'clear'}
+                                            onChange={() => setResetType('clear')}
+                                            className="accent-rose-600"
+                                        />
+                                    </div>
+                                    <p className="mt-1 text-[11px] leading-relaxed text-rose-600">
+                                        Menghapus seluruh daftar siswa DPT secara permanen untuk mengulang input data pemilih dari awal.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Scope Filter (Tampil jika memilih Reset Status atau Token) */}
+                        {resetType !== 'clear' && (
+                            <div
+                                className="rounded-2xl p-3.5"
+                                style={{
+                                    background: '#FAF6F0',
+                                    border: '1px solid #E8D9C4',
+                                }}
+                            >
+                                <label className="block text-xs font-bold text-[#4A2E1B]">
+                                    Cakupan Siswa yang Di-reset:
+                                </label>
+                                <select
+                                    value={resetClassScope}
+                                    onChange={(e) => setResetClassScope(e.target.value)}
+                                    className="mt-1.5 w-full cursor-pointer rounded-xl bg-white px-3 py-2 text-xs font-bold text-[#4A2E1B] outline-none shadow-2xs"
+                                    style={{ border: '1px solid #E8D9C4' }}
+                                >
+                                    <option value="all">
+                                        Semua Pemilih (Seluruh DPT - {stats.total} Siswa)
+                                    </option>
+                                    {classes.map((cls) => (
+                                        <option key={cls} value={cls}>
+                                            Khusus Kelas: {cls}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                        )}
+
+                        {/* Tombol Aksi */}
+                        <div
+                            className="flex items-center justify-end gap-2 border-t pt-3"
+                            style={{ borderColor: '#E8D9C4' }}
+                        >
+                            <button
+                                type="button"
+                                onClick={() => setIsResetModalOpen(false)}
+                                className="cursor-pointer rounded-xl px-4 py-2.5 text-xs font-bold text-neutral-600 hover:bg-[#F5EFE6]"
+                            >
+                                Batal
+                            </button>
+                            <button
+                                type="button"
+                                onClick={handleExecuteReset}
+                                className={`flex cursor-pointer items-center gap-1.5 rounded-xl px-5 py-2.5 text-xs font-black text-white shadow-xs transition-transform hover:scale-105 active:scale-95 ${
+                                    resetType === 'clear'
+                                        ? 'bg-rose-600 hover:bg-rose-700'
+                                        : 'bg-[#4A2E1B] hover:bg-[#2D1A0A]'
+                                }`}
+                            >
+                                <RotateCcw className="h-3.5 w-3.5" />
+                                <span>Lanjutkan Reset</span>
+                            </button>
+                        </div>
+                    </div>
                 </DialogContent>
             </Dialog>
 

@@ -8,7 +8,10 @@ import {
     Activity,
     Info,
     RotateCcw,
+    Trash2,
 } from 'lucide-react';
+import { toast } from 'sonner';
+import { ConfirmationModal } from '@/components/confirmation-modal';
 
 type AuditLogItem = {
     id: number;
@@ -107,14 +110,14 @@ const actionConfig: Record<
     },
     add_voter: {
         label: 'Tambah Pemilih DPT',
-        bg: '#EFF6FF',
-        color: '#1D4ED8',
+        bg: '#F5EFE6',
+        color: '#8B5A2B',
         icon: '👤',
     },
     import_dpt: {
         label: 'Impor DPT Massal',
-        bg: '#EFF6FF',
-        color: '#1D4ED8',
+        bg: '#F5EFE6',
+        color: '#8B5A2B',
         icon: '📥',
     },
     reset_token: {
@@ -165,6 +168,23 @@ export default function AuditLogPage({
     const [search, setSearch] = useState(filters?.search || '');
     const [selectedAction, setSelectedAction] = useState(filters?.action || '');
 
+    // State Modal Konfirmasi Hapus Log
+    const [confirmModal, setConfirmModal] = useState<{
+        open: boolean;
+        title: string;
+        description: string;
+        confirmText: string;
+        variant: 'danger' | 'warning' | 'primary';
+        action: () => void;
+    }>({
+        open: false,
+        title: '',
+        description: '',
+        confirmText: 'Konfirmasi',
+        variant: 'danger',
+        action: () => {},
+    });
+
     const applyFilters = (newSearch?: string, newAction?: string) => {
         router.get(
             '/admin/audit-log',
@@ -174,6 +194,44 @@ export default function AuditLogPage({
             },
             { preserveState: true, preserveScroll: true },
         );
+    };
+
+    // Hapus satu catatan log
+    const handleDeleteLog = (item: AuditLogItem) => {
+        const cfg = actionConfig[item.action] || { label: item.action };
+        setConfirmModal({
+            open: true,
+            title: 'Hapus Catatan Log?',
+            description: `Apakah Anda yakin ingin menghapus catatan rekam jejak "${cfg.label}" pada ${formatDate(item.created_at)}? Tindakan ini tidak dapat dibatalkan.`,
+            confirmText: 'Ya, Hapus Log',
+            variant: 'danger',
+            action: () => {
+                router.delete(`/admin/audit-log/${item.id}`, {
+                    onSuccess: () =>
+                        toast.success('Catatan log berhasil dihapus.'),
+                });
+            },
+        });
+    };
+
+    // Bersihkan seluruh audit log
+    const handleClearAllLogs = () => {
+        setConfirmModal({
+            open: true,
+            title: 'BERSIHKAN SELURUH AUDIT LOG?',
+            description:
+                'PERINGATAN KRUSIAL: Seluruh riwayat rekam jejak aktivitas panitia dan sistem akan dihapus permanen. Tindakan ini tidak dapat dibatalkan.',
+            confirmText: 'Ya, Kosongkan Semua Log',
+            variant: 'danger',
+            action: () => {
+                router.delete('/admin/audit-log', {
+                    onSuccess: () =>
+                        toast.success(
+                            'Seluruh catatan audit log berhasil dibersihkan.',
+                        ),
+                });
+            },
+        });
     };
 
     // Format Tanggal
@@ -230,7 +288,7 @@ export default function AuditLogPage({
                         </p>
                     </div>
 
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-2">
                         <button
                             onClick={() => router.reload()}
                             className="flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-bold transition-all hover:bg-[#F5EFE6]"
@@ -243,6 +301,17 @@ export default function AuditLogPage({
                             <RotateCcw className="h-3.5 w-3.5" />
                             Refresh Log
                         </button>
+
+                        {stats.total > 0 && (
+                            <button
+                                onClick={handleClearAllLogs}
+                                className="flex items-center gap-1.5 rounded-xl border border-rose-200 bg-white px-3.5 py-2 text-xs font-bold text-rose-600 shadow-2xs transition-colors hover:bg-rose-50"
+                                title="Bersihkan seluruh riwayat rekam jejak audit log"
+                            >
+                                <Trash2 className="h-3.5 w-3.5" />
+                                <span>Bersihkan Semua Log</span>
+                            </button>
+                        )}
                     </div>
                 </div>
 
@@ -250,12 +319,12 @@ export default function AuditLogPage({
                 <div
                     className="flex items-start gap-3.5 rounded-2xl p-4 text-xs font-medium"
                     style={{
-                        background: '#EFF6FF',
-                        border: '1px solid #BFDBFE',
-                        color: '#1E3A8A',
+                        background: '#F5EFE6',
+                        border: '1px solid #E8D9C4',
+                        color: '#4A2E1B',
                     }}
                 >
-                    <Info className="mt-0.5 h-5 w-5 shrink-0 text-blue-600" />
+                    <Info className="mt-0.5 h-5 w-5 shrink-0 text-[#8B5A2B]" />
                     <div className="leading-relaxed">
                         <strong>Prinsip Kerahasiaan Pemilihan:</strong> Log ini
                         hanya mencatat{' '}
@@ -321,7 +390,7 @@ export default function AuditLogPage({
 
                 {/* Search & Filter Bar */}
                 <div
-                    className="flex flex-col gap-3 rounded-2xl p-4 shadow-2xs sm:flex-row sm:items-center"
+                    className="flex flex-col gap-3 rounded-2xl p-4 shadow-2xs sm:flex-row sm:items-center sm:justify-between"
                     style={{ background: '#fff', border: '1px solid #E8D9C4' }}
                 >
                     <div className="relative flex-1">
@@ -343,28 +412,33 @@ export default function AuditLogPage({
                         />
                     </div>
 
-                    <select
-                        value={selectedAction}
-                        onChange={(e) => {
-                            setSelectedAction(e.target.value);
-                            applyFilters(undefined, e.target.value);
-                        }}
-                        className="cursor-pointer rounded-xl px-3 py-2 text-xs font-bold outline-none"
-                        style={{
-                            background: '#FAF6F0',
-                            border: '1px solid #E8D9C4',
-                            color: '#4A2E1B',
-                        }}
-                    >
-                        <option value="">Semua Kategori Aksi</option>
-                        {Object.entries(available_actions).map(
-                            ([key, label]) => (
-                                <option key={key} value={key}>
-                                    {label}
-                                </option>
-                            ),
-                        )}
-                    </select>
+                    <div className="flex flex-wrap items-center gap-2">
+                        <span className="rounded-lg border border-[#E8D9C4] bg-[#FAF6F0] px-2.5 py-1 text-[11px] font-semibold text-[#8B5A2B]">
+                            ⚡ 10 Aktivitas Terakhir / Halaman
+                        </span>
+                        <select
+                            value={selectedAction}
+                            onChange={(e) => {
+                                setSelectedAction(e.target.value);
+                                applyFilters(undefined, e.target.value);
+                            }}
+                            className="cursor-pointer rounded-xl px-3 py-2 text-xs font-bold outline-none"
+                            style={{
+                                background: '#FAF6F0',
+                                border: '1px solid #E8D9C4',
+                                color: '#4A2E1B',
+                            }}
+                        >
+                            <option value="">Semua Kategori Aksi</option>
+                            {Object.entries(available_actions).map(
+                                ([key, label]) => (
+                                    <option key={key} value={key}>
+                                        {label}
+                                    </option>
+                                ),
+                            )}
+                        </select>
+                    </div>
                 </div>
 
                 {/* Tabel Audit Log */}
@@ -380,7 +454,8 @@ export default function AuditLogPage({
                         <span className="col-span-3">Waktu Eksekusi</span>
                         <span className="col-span-2">Pelaksana</span>
                         <span className="col-span-3">Aksi Terdaftar</span>
-                        <span className="col-span-4">Detail Metadata</span>
+                        <span className="col-span-3">Detail Metadata</span>
+                        <span className="col-span-1 text-right">Aksi</span>
                     </div>
 
                     {/* Baris Log */}
@@ -453,7 +528,7 @@ export default function AuditLogPage({
                                         </div>
 
                                         {/* Detail Metadata */}
-                                        <div className="col-span-4 min-w-0 text-neutral-600">
+                                        <div className="col-span-3 min-w-0 text-neutral-600">
                                             {item.meta ? (
                                                 <div className="truncate rounded-lg border border-[#E8D9C4] bg-[#FAF6F0] p-1.5 font-mono text-[11px]">
                                                     {Object.entries(
@@ -475,6 +550,18 @@ export default function AuditLogPage({
                                                     —
                                                 </span>
                                             )}
+                                        </div>
+
+                                        {/* Tombol Hapus Log Individu */}
+                                        <div className="col-span-1 flex items-center justify-end">
+                                            <button
+                                                type="button"
+                                                onClick={() => handleDeleteLog(item)}
+                                                className="rounded-lg p-1.5 text-neutral-400 transition-colors hover:bg-rose-50 hover:text-rose-600"
+                                                title="Hapus log ini"
+                                            >
+                                                <Trash2 className="h-4 w-4" />
+                                            </button>
                                         </div>
                                     </div>
                                 );
@@ -522,6 +609,23 @@ export default function AuditLogPage({
                     )}
                 </div>
             </div>
+
+            {/* Modal Konfirmasi */}
+            <ConfirmationModal
+                open={confirmModal.open}
+                onOpenChange={(open) =>
+                    setConfirmModal((prev) => ({ ...prev, open }))
+                }
+                title={confirmModal.title}
+                description={confirmModal.description}
+                confirmText={confirmModal.confirmText}
+                cancelText="Batal"
+                variant={confirmModal.variant}
+                onConfirm={() => {
+                    confirmModal.action();
+                    setConfirmModal((prev) => ({ ...prev, open: false }));
+                }}
+            />
         </>
     );
 }

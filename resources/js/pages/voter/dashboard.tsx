@@ -99,10 +99,12 @@ export default function VoterDashboard({
 
     // Active Section Spy for Sidebar Navigation
     const [activeSection, setActiveSection] = useState<
-        'tata-cara' | 'profil-putra' | 'profil-putri' | 'bilik-suara'
-    >('tata-cara');
+        'hero' | 'tentang' | 'tata-cara' | 'profil-putra' | 'profil-putri' | 'bilik-suara'
+    >('hero');
 
     // Section Refs
+    const heroRef = useRef<HTMLDivElement | null>(null);
+    const tentangRef = useRef<HTMLDivElement | null>(null);
     const tataCaraRef = useRef<HTMLDivElement | null>(null);
     const profilPutraRef = useRef<HTMLDivElement | null>(null);
     const profilPutriRef = useRef<HTMLDivElement | null>(null);
@@ -129,6 +131,8 @@ export default function VoterDashboard({
     // Intersection Observer / Scroll Spy for section tracking
     useEffect(() => {
         const sections = [
+            { id: 'hero', ref: heroRef },
+            { id: 'tentang', ref: tentangRef },
             { id: 'tata-cara', ref: tataCaraRef },
             { id: 'profil-putra', ref: profilPutraRef },
             { id: 'profil-putri', ref: profilPutriRef },
@@ -228,6 +232,8 @@ export default function VoterDashboard({
                         isBothSelected={isBothSelected}
                         progressCount={progressCount}
                         isVotingAllowed={isVotingAllowed}
+                        onNavigateHero={() => scrollToSection(heroRef)}
+                        onNavigateTentang={() => scrollToSection(tentangRef)}
                         onNavigateTataCara={() => scrollToSection(tataCaraRef)}
                         onNavigateProfilPutra={() =>
                             scrollToSection(profilPutraRef)
@@ -271,28 +277,13 @@ export default function VoterDashboard({
 
                             <div className="flex items-center gap-2.5">
                                 <div
-                                    className="flex h-9 w-9 items-center justify-center rounded-xl shadow-xs"
+                                    className="flex h-9 w-9 items-center justify-center rounded-xl shadow-xs select-none text-lg"
                                     style={{
                                         background:
                                             'linear-gradient(135deg, #4A2E1B 0%, #2D1A0A 100%)',
                                     }}
                                 >
-                                    <svg
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        className="h-5 w-5 text-[#D4AF37]"
-                                    >
-                                        <path
-                                            d="M12 2C12 2 7 7 7 12C7 14.8 8.5 17.2 12 19C15.5 17.2 17 14.8 17 12C17 7 12 2 12 2Z"
-                                            fill="currentColor"
-                                        />
-                                        <path
-                                            d="M12 19V22M9 22H15"
-                                            stroke="currentColor"
-                                            strokeWidth="2"
-                                            strokeLinecap="round"
-                                        />
-                                    </svg>
+                                    <span role="img" aria-label="Logo Pramuka">⚜️</span>
                                 </div>
                                 <div>
                                     <div className="flex items-center gap-2">
@@ -369,7 +360,7 @@ export default function VoterDashboard({
                     </header>
 
                     {/* Content Body */}
-                    <main className="mx-auto w-full max-w-4xl flex-1 space-y-10 px-4.5 py-6 pt-20 pb-16 sm:space-y-12 sm:px-8 sm:py-8 sm:pt-24">
+                    <main className="mx-auto w-full max-w-4xl flex-1 space-y-10 px-4.5 py-6 pt-20 pb-28 sm:space-y-12 sm:px-8 sm:py-8 sm:pt-24 lg:pb-16">
                         {/* Banner status jika belum dibuka */}
                         {!isVotingAllowed && (
                             <motion.div
@@ -399,197 +390,426 @@ export default function VoterDashboard({
                         )}
 
                         {/* ═════════════════════════════════════════════════════
-                            BAGIAN 1: SAPAAN & PANDUAN TATA CARA MEMILIH
+                            BAGIAN 1: HERO SAPAAN PEMILIH & IDENTITAS DPT (UNBOXED & PROFESIONAL)
                         ═════════════════════════════════════════════════════ */}
-                        <ScrollRevealSection ref={tataCaraRef} id="tata-cara">
-                            <div
-                                className="relative overflow-hidden rounded-3xl p-6 text-white shadow-md sm:p-9"
+                        <ScrollRevealSection ref={heroRef} id="hero">
+                            <motion.div
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                                className="relative overflow-hidden rounded-[2rem] p-6 text-white shadow-xl sm:p-10"
                                 style={{
                                     background:
-                                        'linear-gradient(145deg, #3D2211 0%, #291508 60%, #1A0D05 100%)',
-                                    border: '1.5px solid rgba(212, 175, 55, 0.25)',
+                                        'linear-gradient(135deg, #2D1A0E 0%, #1F1008 50%, #120803 100%)',
+                                    border: '1px solid rgba(212, 175, 55, 0.25)',
                                 }}
                             >
-                                <div className="mb-2 flex items-center gap-2 text-xs font-extrabold tracking-wider text-[#D4AF37] uppercase">
-                                    <Sparkles className="h-4 w-4" />
-                                    <span>Bilik Suara Digital Siswa</span>
+                                {/* Ambient Glow Background Accents */}
+                                <div
+                                    className="pointer-events-none absolute -top-20 -right-20 h-72 w-72 rounded-full opacity-25 blur-3xl"
+                                    style={{ background: '#D4AF37' }}
+                                />
+                                <div
+                                    className="pointer-events-none absolute -bottom-20 -left-20 h-72 w-72 rounded-full opacity-20 blur-3xl"
+                                    style={{ background: '#2D5A27' }}
+                                />
+
+                                <div className="relative z-10">
+                                    {/* Top Status Indicators */}
+                                    <div className="mb-4 flex flex-wrap items-center gap-2.5">
+                                        <span className="inline-flex items-center gap-1.5 rounded-full bg-white/[0.08] px-3.5 py-1 text-xs font-bold tracking-wider text-[#D4AF37] uppercase backdrop-blur-md border border-white/10">
+                                            <span>⚜️</span>
+                                            <span>Bilik Suara Ambalan Penegak</span>
+                                        </span>
+                                        <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/15 px-3 py-1 text-xs font-semibold text-emerald-300 border border-emerald-500/25">
+                                            <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-400" />
+                                            <span>Sesi Aman & Terenkripsi</span>
+                                        </span>
+                                    </div>
+
+                                    {/* Sapaan Personal Utama */}
+                                    <h1 className="text-2xl font-black tracking-tight text-[#FAF6F0] sm:text-4xl lg:text-[2.6rem] lg:leading-tight">
+                                        Selamat Datang,{' '}
+                                        <span className="bg-gradient-to-r from-[#D4AF37] via-[#F6E7B8] to-[#D4AF37] bg-clip-text text-transparent">
+                                            {voter.name}
+                                        </span>
+                                    </h1>
+
+                                    <p className="mt-3 max-w-2xl text-xs leading-relaxed text-[#D6C7B2] sm:text-sm">
+                                        Hak suara Anda terdaftar sah dan terlindungi dalam sistem E-Pradana. Salurkan aspirasi kepemimpinan ambalan demi kemajuan gugus depan secara LUBER dan JURDIL.
+                                    </p>
+
+                                    {/* Unified Glass Identity Strip (Bukan Box Bertumpuk) */}
+                                    <div className="mt-8 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] shadow-inner backdrop-blur-md">
+                                        <div className="grid grid-cols-1 divide-y divide-white/10 sm:grid-cols-3 sm:divide-y-0 sm:divide-x">
+                                            {/* Item 1: Kelas DPT */}
+                                            <div className="flex items-center gap-3.5 p-4 transition-colors hover:bg-white/[0.03]">
+                                                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#D4AF37]/15 text-lg font-black text-[#F3E5AB] border border-[#D4AF37]/30 shadow-xs">
+                                                    🎓
+                                                </div>
+                                                <div className="min-w-0 flex-1">
+                                                    <span className="block text-[10px] font-bold tracking-wider text-[#D4AF37] uppercase">
+                                                        Terdaftar Sebagai
+                                                    </span>
+                                                    <strong className="block truncate text-sm font-black text-white">
+                                                        Kelas {voter.class}
+                                                    </strong>
+                                                    <span className="block text-[10px] text-[#C9BAA7]">
+                                                        Pemilih Sah DPT
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            {/* Item 2: Username Resmi */}
+                                            <div className="flex items-center gap-3.5 p-4 transition-colors hover:bg-white/[0.03]">
+                                                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/[0.08] text-lg font-black text-[#D4AF37] border border-white/15 shadow-xs">
+                                                    🆔
+                                                </div>
+                                                <div className="min-w-0 flex-1">
+                                                    <span className="block text-[10px] font-bold tracking-wider text-[#D4AF37] uppercase">
+                                                        ID Akun / Username
+                                                    </span>
+                                                    <code className="block truncate font-mono text-sm font-bold text-[#F6E7B8]">
+                                                        @{voter.username}
+                                                    </code>
+                                                    <span className="block text-[10px] text-[#C9BAA7]">
+                                                        Kredensial Resmi
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            {/* Item 3: Status Hak Suara */}
+                                            <div className="flex items-center gap-3.5 p-4 transition-colors hover:bg-white/[0.03]">
+                                                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-500/15 text-lg font-black text-emerald-300 border border-emerald-500/30 shadow-xs">
+                                                    🛡️
+                                                </div>
+                                                <div className="min-w-0 flex-1">
+                                                    <span className="block text-[10px] font-bold tracking-wider text-[#D4AF37] uppercase">
+                                                        Status Hak Suara
+                                                    </span>
+                                                    <strong className="block truncate text-sm font-black text-emerald-300">
+                                                        {voter.has_voted ? 'Sudah Digunakan' : 'Hak Suara Aktif'}
+                                                    </strong>
+                                                    <span className="block text-[10px] text-[#C9BAA7]">
+                                                        1 Putra & 1 Putri
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Action Links Bar */}
+                                    <div className="mt-7 flex flex-wrap items-center gap-3 border-t border-white/10 pt-6">
+                                        <button
+                                            type="button"
+                                            onClick={() => scrollToSection(tentangRef)}
+                                            className="group inline-flex cursor-pointer items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold text-[#D6C7B2] transition-all hover:bg-white/10 hover:text-white"
+                                        >
+                                            <span className="transition-transform group-hover:scale-110">⚜️</span>
+                                            <span>Tentang Website</span>
+                                            <ChevronRight className="h-3 w-3 opacity-60 transition-transform group-hover:translate-x-0.5" />
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            onClick={() => scrollToSection(tataCaraRef)}
+                                            className="group inline-flex cursor-pointer items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold text-[#D6C7B2] transition-all hover:bg-white/10 hover:text-white"
+                                        >
+                                            <Compass className="h-3.5 w-3.5 text-[#D4AF37] transition-transform group-hover:rotate-45" />
+                                            <span>Tata Cara</span>
+                                            <ChevronRight className="h-3 w-3 opacity-60 transition-transform group-hover:translate-x-0.5" />
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            onClick={() => scrollToSection(profilPutraRef)}
+                                            className="group inline-flex cursor-pointer items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold text-[#D6C7B2] transition-all hover:bg-white/10 hover:text-white"
+                                        >
+                                            <FileText className="h-3.5 w-3.5 text-[#D4AF37]" />
+                                            <span>Profil Kandidat</span>
+                                            <ChevronRight className="h-3 w-3 opacity-60 transition-transform group-hover:translate-x-0.5" />
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            onClick={() => scrollToSection(bilikSuaraRef)}
+                                            className="ml-auto inline-flex cursor-pointer items-center gap-2 rounded-xl px-5 py-2.5 text-xs font-black text-white shadow-md transition-all hover:scale-105 hover:shadow-lg active:scale-95"
+                                            style={{ background: '#2D5A27' }}
+                                        >
+                                            <Vote className="h-4 w-4 text-[#D4AF37]" />
+                                            <span>Ke Bilik Pencoblosan 🗳️</span>
+                                        </button>
+                                    </div>
                                 </div>
+                            </motion.div>
+                        </ScrollRevealSection>
 
-                                <h1 className="text-2xl leading-tight font-black tracking-tight text-[#FAF6F0] sm:text-4xl">
-                                    Halo, {voter.name}!
-                                </h1>
-                                <p className="mt-1 text-xs font-medium text-[#D6C7B2] sm:text-sm">
-                                    Pemilih Terdaftar:{' '}
-                                    <strong className="text-white">
-                                        Kelas {voter.class}
-                                    </strong>{' '}
-                                    · Username:{' '}
-                                    <code className="rounded bg-black/30 px-2 py-0.5 font-mono text-xs text-[#D4AF37]">
-                                        {voter.username}
-                                    </code>
-                                </p>
-
-                                {/* 4 Langkah Mudah */}
-                                <div className="mt-6 border-t border-white/10 pt-6">
-                                    <div className="mb-3.5 flex items-center gap-2">
-                                        <Compass className="h-4 w-4 text-[#D4AF37]" />
-                                        <h2 className="text-xs font-black tracking-wider text-[#FAF6F0] uppercase">
-                                            Tata Cara Penyaluran Hak Suara
+                        {/* ═════════════════════════════════════════════════════
+                            BAGIAN 2: TENTANG PLATFORM E-PRADANA (EDITORIAL OPEN LAYOUT)
+                        ═════════════════════════════════════════════════════ */}
+                        <ScrollRevealSection ref={tentangRef} id="tentang">
+                            <div className="space-y-6">
+                                {/* Header Section */}
+                                <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+                                    <div>
+                                        <div className="flex items-center gap-2 text-xs font-extrabold tracking-wider text-[#8B5A2B] uppercase">
+                                            <span>⚜️</span>
+                                            <span>Tentang Platform E-Pradana</span>
+                                        </div>
+                                        <h2 className="mt-1 text-2xl font-black tracking-tight text-[#4A2E1B] sm:text-3xl">
+                                            Transformasi Digital Pemilihan Ambalan
                                         </h2>
                                     </div>
-
-                                    <div className="grid grid-cols-1 gap-3 text-xs sm:grid-cols-2">
-                                        <div
-                                            className="flex items-start gap-3 rounded-2xl p-3.5"
-                                            style={{
-                                                background:
-                                                    'rgba(255, 255, 255, 0.05)',
-                                                border: '1px solid rgba(212, 175, 55, 0.15)',
-                                            }}
-                                        >
-                                            <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#D4AF37] text-xs font-black text-[#3D2211]">
-                                                1
-                                            </span>
-                                            <div>
-                                                <p className="font-bold text-white">
-                                                    Baca Visi & Misi
-                                                </p>
-                                                <p className="mt-0.5 text-[11px] leading-snug text-[#D6C7B2]">
-                                                    Pelajari program kerja
-                                                    seluruh calon Pradana Putra
-                                                    & Putri di bawah.
-                                                </p>
-                                            </div>
-                                        </div>
-
-                                        <div
-                                            className="flex items-start gap-3 rounded-2xl p-3.5"
-                                            style={{
-                                                background:
-                                                    'rgba(255, 255, 255, 0.05)',
-                                                border: '1px solid rgba(212, 175, 55, 0.15)',
-                                            }}
-                                        >
-                                            <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#D4AF37] text-xs font-black text-[#3D2211]">
-                                                2
-                                            </span>
-                                            <div>
-                                                <p className="font-bold text-white">
-                                                    Tentukan Pilihan di Bilik
-                                                </p>
-                                                <p className="mt-0.5 text-[11px] leading-snug text-[#D6C7B2]">
-                                                    Pilih calon di Bilik Suara.
-                                                    Pilihan masih bebas
-                                                    diganti-ganti sebelum
-                                                    disimpan.
-                                                </p>
-                                            </div>
-                                        </div>
-
-                                        <div
-                                            className="flex items-start gap-3 rounded-2xl p-3.5"
-                                            style={{
-                                                background:
-                                                    'rgba(255, 255, 255, 0.05)',
-                                                border: '1px solid rgba(212, 175, 55, 0.15)',
-                                            }}
-                                        >
-                                            <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#D4AF37] text-xs font-black text-[#3D2211]">
-                                                3
-                                            </span>
-                                            <div>
-                                                <p className="font-bold text-white">
-                                                    Simpan & Validasi
-                                                </p>
-                                                <p className="mt-0.5 text-[11px] leading-snug text-[#D6C7B2]">
-                                                    Tekan tombol Simpan Jawaban
-                                                    untuk memeriksa kembali
-                                                    sebelum suara dikirim.
-                                                </p>
-                                            </div>
-                                        </div>
-
-                                        <div
-                                            className="flex items-start gap-3 rounded-2xl p-3.5"
-                                            style={{
-                                                background:
-                                                    'rgba(255, 255, 255, 0.05)',
-                                                border: '1px solid rgba(212, 175, 55, 0.15)',
-                                            }}
-                                        >
-                                            <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#D4AF37] text-xs font-black text-[#3D2211]">
-                                                4
-                                            </span>
-                                            <div>
-                                                <p className="font-bold text-white">
-                                                    Notifikasi & Logout
-                                                </p>
-                                                <p className="mt-0.5 text-[11px] leading-snug text-[#D6C7B2]">
-                                                    Setelah suara masuk ke
-                                                    kotak, lakukan logout demi
-                                                    menjaga kerahasiaan pilihan.
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="mt-6 flex flex-wrap items-center gap-3">
-                                    <button
-                                        type="button"
-                                        onClick={() =>
-                                            scrollToSection(profilPutraRef)
-                                        }
-                                        className="inline-flex cursor-pointer items-center gap-2 rounded-2xl px-4 py-2.5 text-xs font-bold text-white transition-all hover:bg-white/15"
+                                    <span
+                                        className="self-start rounded-full px-3.5 py-1 text-xs font-bold uppercase shadow-2xs sm:self-auto"
                                         style={{
-                                            border: '1px solid rgba(212, 175, 55, 0.4)',
+                                            background: '#FAF6F0',
+                                            color: '#8B5A2B',
+                                            border: '1px solid #E8D9C4',
                                         }}
                                     >
-                                        <FileText className="h-4 w-4 text-[#D4AF37]" />
-                                        <span>Baca Visi & Misi Kandidat ↓</span>
-                                    </button>
+                                        Suksesi Kepemimpinan
+                                    </span>
+                                </div>
 
-                                    <button
-                                        type="button"
-                                        onClick={() =>
-                                            scrollToSection(bilikSuaraRef)
-                                        }
-                                        className="inline-flex cursor-pointer items-center gap-2 rounded-2xl px-5 py-2.5 text-xs font-black text-white shadow-md transition-all hover:scale-105 active:scale-95"
-                                        style={{ background: '#2D5A27' }}
-                                    >
-                                        <Vote className="h-4 w-4 text-[#D4AF37]" />
-                                        <span>Menuju Bilik Pencoblosan 🗳️</span>
-                                    </button>
+                                {/* Deskripsi Mengalir yang Berwibawa */}
+                                <div
+                                    className="rounded-3xl p-6 sm:p-8"
+                                    style={{
+                                        background: '#FAF6F0',
+                                        border: '1px solid #E8D9C4',
+                                    }}
+                                >
+                                    <p className="text-xs leading-relaxed text-[#4A2E1B] sm:text-sm">
+                                        <strong>E-Pradana</strong> adalah sistem pemungutan suara elektronik resmi yang dirancang khusus untuk suksesi kepemimpinan <strong>Pradana Putra</strong> dan <strong>Pradana Putri</strong> di Gugus Depan Ambalan Penegak Gerakan Pramuka. Melalui transformasi digital ini, pemilihan berlangsung secara tertib, efisien, akuntabel, dan mengutamakan integritas nilai-nilai luhur <strong>Dasa Darma</strong> serta <strong>Tri Satya</strong>.
+                                    </p>
+
+                                    {/* 4 Pilar Keunggulan Platform (Airy Grid) */}
+                                    <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                                        <motion.div
+                                            whileHover={{ y: -3 }}
+                                            transition={{ duration: 0.2 }}
+                                            className="rounded-2xl bg-white p-4.5 shadow-2xs transition-all hover:shadow-md"
+                                            style={{ border: '1px solid #E8D9C4' }}
+                                        >
+                                            <div className="mb-2.5 flex h-9 w-9 items-center justify-center rounded-xl bg-[#FAF6F0] text-base">
+                                                ⚖️
+                                            </div>
+                                            <h3 className="text-xs font-black text-[#4A2E1B]">
+                                                Asas LUBER JURDIL
+                                            </h3>
+                                            <p className="mt-1 text-[11px] leading-relaxed text-[#8B5A2B]">
+                                                Langsung, umum, bebas, rahasia, jujur, dan adil menjadi pedoman mutlak seluruh alur voting.
+                                            </p>
+                                        </motion.div>
+
+                                        <motion.div
+                                            whileHover={{ y: -3 }}
+                                            transition={{ duration: 0.2 }}
+                                            className="rounded-2xl bg-white p-4.5 shadow-2xs transition-all hover:shadow-md"
+                                            style={{ border: '1px solid #E8D9C4' }}
+                                        >
+                                            <div className="mb-2.5 flex h-9 w-9 items-center justify-center rounded-xl bg-[#FAF6F0] text-base">
+                                                🔒
+                                            </div>
+                                            <h3 className="text-xs font-black text-[#4A2E1B]">
+                                                Kerahasiaan Terenkripsi
+                                            </h3>
+                                            <p className="mt-1 text-[11px] leading-relaxed text-[#8B5A2B]">
+                                                Data pilihan Anda tidak pernah dikaitkan dengan nama siswa saat disimpan ke dalam basis data.
+                                            </p>
+                                        </motion.div>
+
+                                        <motion.div
+                                            whileHover={{ y: -3 }}
+                                            transition={{ duration: 0.2 }}
+                                            className="rounded-2xl bg-white p-4.5 shadow-2xs transition-all hover:shadow-md"
+                                            style={{ border: '1px solid #E8D9C4' }}
+                                        >
+                                            <div className="mb-2.5 flex h-9 w-9 items-center justify-center rounded-xl bg-[#FAF6F0] text-base">
+                                                🛡️
+                                            </div>
+                                            <h3 className="text-xs font-black text-[#4A2E1B]">
+                                                Perlindungan Netral
+                                            </h3>
+                                            <p className="mt-1 text-[11px] leading-relaxed text-[#8B5A2B]">
+                                                Grafik perolehan suara dilindungi secara netral hingga pengumuman resmi demi mencegah bias sosial.
+                                            </p>
+                                        </motion.div>
+
+                                        <motion.div
+                                            whileHover={{ y: -3 }}
+                                            transition={{ duration: 0.2 }}
+                                            className="rounded-2xl bg-white p-4.5 shadow-2xs transition-all hover:shadow-md"
+                                            style={{ border: '1px solid #E8D9C4' }}
+                                        >
+                                            <div className="mb-2.5 flex h-9 w-9 items-center justify-center rounded-xl bg-[#FAF6F0] text-base">
+                                                ⚜️
+                                            </div>
+                                            <h3 className="text-xs font-black text-[#4A2E1B]">
+                                                Karakter Pandu Sejati
+                                            </h3>
+                                            <p className="mt-1 text-[11px] leading-relaxed text-[#8B5A2B]">
+                                                Mengutamakan musyawarah, sportivitas, dan loyalitas terhadap kemajuan gugus depan.
+                                            </p>
+                                        </motion.div>
+                                    </div>
                                 </div>
                             </div>
                         </ScrollRevealSection>
 
                         {/* ═════════════════════════════════════════════════════
-                            BAGIAN 2: PROFIL KANDIDAT PUTRA (MURNI LITERASI - TANPA TOMBOL VOTING)
+                            BAGIAN 3: PANDUAN & TATA CARA PENYALURAN HAK SUARA (TIMELINE STEPPED JOURNEY)
+                        ═════════════════════════════════════════════════════ */}
+                        <ScrollRevealSection ref={tataCaraRef} id="tata-cara">
+                            <div className="space-y-6">
+                                <div>
+                                    <div className="flex items-center gap-2 text-xs font-extrabold tracking-wider text-[#8B5A2B] uppercase">
+                                        <Compass className="h-4 w-4" />
+                                        <span>Panduan Praktis Pemilih</span>
+                                    </div>
+                                    <h2 className="mt-1 text-2xl font-black tracking-tight text-[#4A2E1B] sm:text-3xl">
+                                        Tata Cara Penyaluran Hak Suara
+                                    </h2>
+                                    <p className="mt-1 text-xs text-[#8B5A2B] sm:text-sm">
+                                        Ikuti 4 langkah terstruktur berikut untuk memastikan suara Anda tersalurkan dengan sah:
+                                    </p>
+                                </div>
+
+                                {/* Stepped Workflow Layout (Tanpa Box Berat) */}
+                                <div
+                                    className="overflow-hidden rounded-3xl p-6 sm:p-8"
+                                    style={{
+                                        background: '#FAF6F0',
+                                        border: '1px solid #E8D9C4',
+                                    }}
+                                >
+                                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                                        {/* Step 1 */}
+                                        <div className="relative flex flex-col justify-between rounded-2xl bg-white p-5 shadow-2xs transition-all hover:shadow-md">
+                                            <div>
+                                                <div className="mb-3 flex items-center justify-between">
+                                                    <span className="flex h-7 w-7 items-center justify-center rounded-xl bg-[#4A2E1B] text-xs font-black text-[#D4AF37] shadow-xs">
+                                                        1
+                                                    </span>
+                                                    <span className="text-[10px] font-bold text-[#8B5A2B] uppercase">
+                                                        Tahap Awal
+                                                    </span>
+                                                </div>
+                                                <h4 className="text-sm font-black text-[#4A2E1B]">
+                                                    Baca Profil Calon
+                                                </h4>
+                                                <p className="mt-1.5 text-[11px] leading-relaxed text-[#8B5A2B]">
+                                                    Pelajari visi, misi, dan gagasan calon Pradana Putra & Putri pada bagian profil sebelum menentukan pilihan.
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        {/* Step 2 */}
+                                        <div className="relative flex flex-col justify-between rounded-2xl bg-white p-5 shadow-2xs transition-all hover:shadow-md">
+                                            <div>
+                                                <div className="mb-3 flex items-center justify-between">
+                                                    <span className="flex h-7 w-7 items-center justify-center rounded-xl bg-[#4A2E1B] text-xs font-black text-[#D4AF37] shadow-xs">
+                                                        2
+                                                    </span>
+                                                    <span className="text-[10px] font-bold text-[#8B5A2B] uppercase">
+                                                        Pemilihan
+                                                    </span>
+                                                </div>
+                                                <h4 className="text-sm font-black text-[#4A2E1B]">
+                                                    Tentukan Pilihan
+                                                </h4>
+                                                <p className="mt-1.5 text-[11px] leading-relaxed text-[#8B5A2B]">
+                                                    Klik calon pilihan Anda di Bilik Suara. Pilihan bersifat draf sementara dan masih bebas diganti sebelum disimpan.
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        {/* Step 3 */}
+                                        <div className="relative flex flex-col justify-between rounded-2xl bg-white p-5 shadow-2xs transition-all hover:shadow-md">
+                                            <div>
+                                                <div className="mb-3 flex items-center justify-between">
+                                                    <span className="flex h-7 w-7 items-center justify-center rounded-xl bg-[#2D5A27] text-xs font-black text-white shadow-xs">
+                                                        3
+                                                    </span>
+                                                    <span className="text-[10px] font-bold text-emerald-700 uppercase">
+                                                        Validasi
+                                                    </span>
+                                                </div>
+                                                <h4 className="text-sm font-black text-[#4A2E1B]">
+                                                    Simpan Jawaban
+                                                </h4>
+                                                <p className="mt-1.5 text-[11px] leading-relaxed text-[#8B5A2B]">
+                                                    Periksa kembali pilihan pada jendela konfirmasi sebelum suara dienkripsi dan dikirim permanen ke sistem.
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        {/* Step 4 */}
+                                        <div className="relative flex flex-col justify-between rounded-2xl bg-white p-5 shadow-2xs transition-all hover:shadow-md">
+                                            <div>
+                                                <div className="mb-3 flex items-center justify-between">
+                                                    <span className="flex h-7 w-7 items-center justify-center rounded-xl bg-[#8B5A2B] text-xs font-black text-white shadow-xs">
+                                                        4
+                                                    </span>
+                                                    <span className="text-[10px] font-bold text-[#8B5A2B] uppercase">
+                                                        Selesai
+                                                    </span>
+                                                </div>
+                                                <h4 className="text-sm font-black text-[#4A2E1B]">
+                                                    Logout Aman
+                                                </h4>
+                                                <p className="mt-1.5 text-[11px] leading-relaxed text-[#8B5A2B]">
+                                                    Setelah notifikasi sukses tampil, segera logout demi menjamin keamanan akun dan kerahasiaan pilihan Anda.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Action Links */}
+                                    <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-[#E8D9C4] pt-5">
+                                        <button
+                                            type="button"
+                                            onClick={() => scrollToSection(profilPutraRef)}
+                                            className="inline-flex cursor-pointer items-center gap-1.5 text-xs font-bold text-[#4A2E1B] transition-colors hover:text-[#8B5A2B]"
+                                        >
+                                            <FileText className="h-3.5 w-3.5 text-[#8B5A2B]" />
+                                            <span>Mulai Baca Visi & Misi Kandidat ↓</span>
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            onClick={() => scrollToSection(bilikSuaraRef)}
+                                            className="inline-flex cursor-pointer items-center gap-1.5 rounded-xl px-4 py-2 text-xs font-black text-white shadow-xs transition-all hover:scale-105 active:scale-95"
+                                            style={{ background: '#2D5A27' }}
+                                        >
+                                            <Vote className="h-3.5 w-3.5 text-[#D4AF37]" />
+                                            <span>Langsung ke Bilik Suara 🗳️</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </ScrollRevealSection>
+
+                        {/* ═════════════════════════════════════════════════════
+                            BAGIAN 4: PROFIL KANDIDAT PUTRA (MURNI LITERASI)
                         ═════════════════════════════════════════════════════ */}
                         <ScrollRevealSection
                             ref={profilPutraRef}
                             id="profil-putra"
                         >
-                            <div className="mx-auto w-full max-w-xl space-y-4">
-                                <div
-                                    className="flex items-center justify-between rounded-2xl px-4.5 py-4 shadow-xs sm:px-6 sm:py-4.5"
-                                    style={{
-                                        background: '#FAF6F0',
-                                        border: '1.5px solid #E8D9C4',
-                                    }}
-                                >
-                                    <div className="flex items-center gap-3">
-                                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#2D5A27] text-base font-black text-white shadow-xs sm:h-11 sm:w-11 sm:rounded-2xl sm:text-lg">
+                            <div className="space-y-4">
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-2.5">
+                                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#2D5A27] text-sm font-black text-white shadow-xs">
                                             ♂
                                         </div>
                                         <div>
-                                            <h3 className="text-base font-black tracking-tight text-[#4A2E1B] sm:text-lg">
+                                            <h3 className="text-lg font-black tracking-tight text-[#4A2E1B] sm:text-xl">
                                                 Calon Pradana Putra
                                             </h3>
                                             <p className="text-xs font-medium text-[#8B5A2B]">
-                                                {candidates_putra.length}{' '}
-                                                Kandidat
+                                                {candidates_putra.length} Kandidat Terdaftar
                                             </p>
                                         </div>
                                     </div>
@@ -603,31 +823,24 @@ export default function VoterDashboard({
                         </ScrollRevealSection>
 
                         {/* ═════════════════════════════════════════════════════
-                            BAGIAN 3: PROFIL KANDIDAT PUTRI (MURNI LITERASI - TANPA TOMBOL VOTING)
+                            BAGIAN 5: PROFIL KANDIDAT PUTRI (MURNI LITERASI)
                         ═════════════════════════════════════════════════════ */}
                         <ScrollRevealSection
                             ref={profilPutriRef}
                             id="profil-putri"
                         >
-                            <div className="mx-auto w-full max-w-xl space-y-3.5">
-                                <div
-                                    className="flex items-center justify-between rounded-2xl px-4.5 py-4 shadow-xs sm:px-6 sm:py-4.5"
-                                    style={{
-                                        background: '#FAF6F0',
-                                        border: '1.5px solid #E8D9C4',
-                                    }}
-                                >
-                                    <div className="flex items-center gap-3">
-                                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#8B5A2B] text-base font-black text-white shadow-xs sm:h-11 sm:w-11 sm:rounded-2xl sm:text-lg">
+                            <div className="space-y-4">
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-2.5">
+                                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#8B5A2B] text-sm font-black text-white shadow-xs">
                                             ♀
                                         </div>
                                         <div>
-                                            <h3 className="text-base font-black tracking-tight text-[#4A2E1B] sm:text-lg">
+                                            <h3 className="text-lg font-black tracking-tight text-[#4A2E1B] sm:text-xl">
                                                 Calon Pradana Putri
                                             </h3>
                                             <p className="text-xs font-medium text-[#8B5A2B]">
-                                                {candidates_putri.length}{' '}
-                                                Kandidat
+                                                {candidates_putri.length} Kandidat Terdaftar
                                             </p>
                                         </div>
                                     </div>
@@ -641,43 +854,41 @@ export default function VoterDashboard({
                         </ScrollRevealSection>
 
                         {/* ═════════════════════════════════════════════════════
-                            BAGIAN 4: BILIK SUARA (AREA PENCOBLOSAN & SIMPAN JAWABAN)
+                            BAGIAN 6: BILIK SUARA (AREA PENCOBLOSAN ELEGAN & PROFESIONAL)
                         ═════════════════════════════════════════════════════ */}
                         <ScrollRevealSection
                             ref={bilikSuaraRef}
                             id="bilik-suara"
                         >
                             <div
-                                className="rounded-3xl p-6 shadow-lg transition-all sm:p-8"
+                                className="overflow-hidden rounded-[2rem] p-6 shadow-md transition-all sm:p-9"
                                 style={{
-                                    background: '#F5EFE6',
-                                    border: '2.5px solid #D4AF37',
+                                    background: '#FAF7F2',
+                                    border: '1px solid #E8D9C4',
                                 }}
                             >
                                 {/* Header Bilik Pencoblosan */}
-                                <div className="flex flex-col gap-3 border-b border-[#E8D9C4] pb-5 sm:flex-row sm:items-center sm:justify-between">
+                                <div className="flex flex-col gap-4 border-b border-[#E8D9C4] pb-6 sm:flex-row sm:items-center sm:justify-between">
                                     <div>
                                         <div className="flex items-center gap-2.5">
-                                            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#4A2E1B] text-[#D4AF37] shadow-xs">
+                                            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#4A2E1B] text-[#D4AF37] shadow-xs">
                                                 <Vote className="h-5 w-5" />
                                             </div>
-                                            <h2 className="text-2xl font-black tracking-tight text-[#4A2E1B]">
-                                                Bilik Pencoblosan Digital
-                                            </h2>
+                                            <div>
+                                                <h2 className="text-xl font-black tracking-tight text-[#4A2E1B] sm:text-2xl">
+                                                    Bilik Pencoblosan Digital
+                                                </h2>
+                                                <p className="text-xs font-medium text-[#8B5A2B]">
+                                                    Pilihan bersifat sementara dan <strong>masih bebas diganti</strong> sebelum disimpan.
+                                                </p>
+                                            </div>
                                         </div>
-                                        <p className="mt-1 text-xs font-medium text-[#8B5A2B]">
-                                            Klik calon pilihan Anda. Pilihan
-                                            bersifat sementara dan{' '}
-                                            <strong>masih bebas diganti</strong>{' '}
-                                            sebelum Anda menekan tombol Simpan
-                                            Jawaban.
-                                        </p>
                                     </div>
 
                                     {/* Status Pemilihan Live Badge */}
-                                    <div className="flex items-center gap-2 text-xs font-black">
+                                    <div className="flex items-center gap-2 text-xs font-bold">
                                         <span
-                                            className={`rounded-full px-3 py-1.5 text-xs shadow-2xs ${
+                                            className={`rounded-full px-3 py-1 text-xs shadow-2xs transition-all ${
                                                 selectedPutraId
                                                     ? 'bg-emerald-600 font-extrabold text-white'
                                                     : 'border border-[#E8D9C4] bg-white text-neutral-500'
@@ -686,10 +897,10 @@ export default function VoterDashboard({
                                             Putra:{' '}
                                             {selectedPutra
                                                 ? `#${selectedPutra.candidate_number}`
-                                                : 'Belum'}
+                                                : 'Belum Dipilih'}
                                         </span>
                                         <span
-                                            className={`rounded-full px-3 py-1.5 text-xs shadow-2xs ${
+                                            className={`rounded-full px-3 py-1 text-xs shadow-2xs transition-all ${
                                                 selectedPutriId
                                                     ? 'bg-emerald-600 font-extrabold text-white'
                                                     : 'border border-[#E8D9C4] bg-white text-neutral-500'
@@ -698,83 +909,86 @@ export default function VoterDashboard({
                                             Putri:{' '}
                                             {selectedPutri
                                                 ? `#${selectedPutri.candidate_number}`
-                                                : 'Belum'}
+                                                : 'Belum Dipilih'}
                                         </span>
                                     </div>
                                 </div>
 
                                 {/* Banner Peringatan jika voting belum dibuka */}
                                 {!isVotingAllowed && (
-                                    <div className="mt-4 flex items-center gap-3 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-xs font-semibold text-amber-900">
+                                    <div className="mt-5 flex items-center gap-3 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-xs font-semibold text-amber-900">
                                         <Lock className="h-5 w-5 shrink-0 text-amber-600" />
                                         <span>
-                                            Bilik suara ini terkunci karena
-                                            status pemilihan saat ini belum
-                                            berstatus{' '}
-                                            <strong>
-                                                &ldquo;OPEN (Dibuka)&rdquo;
-                                            </strong>{' '}
-                                            oleh panitia. Tombol pemilihan
-                                            dinonaktifkan.
+                                            Bilik suara ini terkunci karena status pemilihan saat ini belum dibuka resmi oleh panitia.
                                         </span>
                                     </div>
                                 )}
 
-                                {/* Dua Tab: Putra & Putri */}
-                                <div
-                                    className="my-6 grid grid-cols-2 rounded-2xl p-1.5 shadow-xs"
-                                    style={{
-                                        background: '#FAF6F0',
-                                        border: '1.5px solid #E8D9C4',
-                                    }}
-                                >
-                                    {/* Tab 1: Putra */}
-                                    <button
-                                        type="button"
-                                        onClick={() =>
-                                            setActiveVoteTab('putra')
-                                        }
-                                        className={`flex cursor-pointer items-center justify-center gap-2 rounded-xl py-3 text-xs font-black transition-all sm:text-sm ${
-                                            activeVoteTab === 'putra'
-                                                ? 'scale-[1.01] bg-[#4A2E1B] text-[#D4AF37] shadow-md'
-                                                : 'text-[#8B5A2B] hover:text-[#4A2E1B]'
-                                        }`}
+                                {/* Animated Sliding Pill Switcher: Putra & Putri */}
+                                <div className="my-6">
+                                    <div
+                                        className="relative flex rounded-2xl p-1.5 shadow-2xs"
+                                        style={{
+                                            background: '#EDE4D6',
+                                            border: '1px solid #E8D9C4',
+                                        }}
                                     >
-                                        <span>⚜️ Pradana Putra</span>
-                                        {selectedPutraId ? (
-                                            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500 text-[11px] font-black text-white">
-                                                ✓
-                                            </span>
-                                        ) : (
-                                            <span className="text-[11px] opacity-60">
-                                                (Pilih 1)
-                                            </span>
-                                        )}
-                                    </button>
+                                        {/* Tab 1: Putra */}
+                                        <button
+                                            type="button"
+                                            onClick={() => setActiveVoteTab('putra')}
+                                            className="relative z-10 flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl py-3 text-xs font-black transition-all sm:text-sm"
+                                            style={{
+                                                color: activeVoteTab === 'putra' ? '#D4AF37' : '#4A2E1B',
+                                            }}
+                                        >
+                                            {activeVoteTab === 'putra' && (
+                                                <motion.div
+                                                    layoutId="activeVoteTabPill"
+                                                    transition={{ type: 'spring', stiffness: 400, damping: 32 }}
+                                                    className="absolute inset-0 rounded-xl bg-[#4A2E1B] shadow-md"
+                                                />
+                                            )}
+                                            <span className="relative z-10">⚜️ Pradana Putra</span>
+                                            {selectedPutraId ? (
+                                                <span className="relative z-10 flex h-4.5 w-4.5 items-center justify-center rounded-full bg-emerald-500 text-[10px] font-black text-white">
+                                                    ✓
+                                                </span>
+                                            ) : (
+                                                <span className="relative z-10 text-[10px] opacity-60">
+                                                    (Pilih 1)
+                                                </span>
+                                            )}
+                                        </button>
 
-                                    {/* Tab 2: Putri */}
-                                    <button
-                                        type="button"
-                                        onClick={() =>
-                                            setActiveVoteTab('putri')
-                                        }
-                                        className={`flex cursor-pointer items-center justify-center gap-2 rounded-xl py-3 text-xs font-black transition-all sm:text-sm ${
-                                            activeVoteTab === 'putri'
-                                                ? 'scale-[1.01] bg-[#4A2E1B] text-[#D4AF37] shadow-md'
-                                                : 'text-[#8B5A2B] hover:text-[#4A2E1B]'
-                                        }`}
-                                    >
-                                        <span>🌸 Pradana Putri</span>
-                                        {selectedPutriId ? (
-                                            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500 text-[11px] font-black text-white">
-                                                ✓
-                                            </span>
-                                        ) : (
-                                            <span className="text-[11px] opacity-60">
-                                                (Pilih 1)
-                                            </span>
-                                        )}
-                                    </button>
+                                        {/* Tab 2: Putri */}
+                                        <button
+                                            type="button"
+                                            onClick={() => setActiveVoteTab('putri')}
+                                            className="relative z-10 flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl py-3 text-xs font-black transition-all sm:text-sm"
+                                            style={{
+                                                color: activeVoteTab === 'putri' ? '#D4AF37' : '#4A2E1B',
+                                            }}
+                                        >
+                                            {activeVoteTab === 'putri' && (
+                                                <motion.div
+                                                    layoutId="activeVoteTabPill"
+                                                    transition={{ type: 'spring', stiffness: 400, damping: 32 }}
+                                                    className="absolute inset-0 rounded-xl bg-[#4A2E1B] shadow-md"
+                                                />
+                                            )}
+                                            <span className="relative z-10">⚜️ Pradana Putri</span>
+                                            {selectedPutriId ? (
+                                                <span className="relative z-10 flex h-4.5 w-4.5 items-center justify-center rounded-full bg-emerald-500 text-[10px] font-black text-white">
+                                                    ✓
+                                                </span>
+                                            ) : (
+                                                <span className="relative z-10 text-[10px] opacity-60">
+                                                    (Pilih 1)
+                                                </span>
+                                            )}
+                                        </button>
+                                    </div>
                                 </div>
 
                                 {/* Konten Kartu Tab Bilik Suara */}
@@ -782,9 +996,9 @@ export default function VoterDashboard({
                                     {activeVoteTab === 'putra' ? (
                                         <motion.div
                                             key="booth-putra"
-                                            initial={{ opacity: 0, x: -15 }}
-                                            animate={{ opacity: 1, x: 0 }}
-                                            exit={{ opacity: 0, x: 15 }}
+                                            initial={{ opacity: 0, y: 10 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            exit={{ opacity: 0, y: -10 }}
                                             transition={{ duration: 0.25 }}
                                             className="space-y-4"
                                         >
@@ -794,11 +1008,7 @@ export default function VoterDashboard({
                                                 </span>
                                                 {selectedPutra && (
                                                     <span className="text-right font-black text-emerald-800">
-                                                        Terpilih: No.{' '}
-                                                        {
-                                                            selectedPutra.candidate_number
-                                                        }{' '}
-                                                        · {selectedPutra.name}
+                                                        Terpilih: No. {selectedPutra.candidate_number} · {selectedPutra.name}
                                                     </span>
                                                 )}
                                             </div>
@@ -819,36 +1029,23 @@ export default function VoterDashboard({
                                                         : undefined
                                                 }
                                             >
-                                                {candidates_putra.map(
-                                                    (candidate) => (
-                                                        <VotingActionCard
-                                                            key={candidate.id}
-                                                            candidate={
-                                                                candidate
-                                                            }
-                                                            isSelected={
-                                                                selectedPutraId ===
-                                                                candidate.id
-                                                            }
-                                                            isVotingAllowed={
-                                                                isVotingAllowed
-                                                            }
-                                                            onSelect={() =>
-                                                                handleSelectPutra(
-                                                                    candidate.id,
-                                                                )
-                                                            }
-                                                        />
-                                                    ),
-                                                )}
+                                                {candidates_putra.map((candidate) => (
+                                                    <VotingActionCard
+                                                        key={candidate.id}
+                                                        candidate={candidate}
+                                                        isSelected={selectedPutraId === candidate.id}
+                                                        isVotingAllowed={isVotingAllowed}
+                                                        onSelect={() => handleSelectPutra(candidate.id)}
+                                                    />
+                                                ))}
                                             </div>
                                         </motion.div>
                                     ) : (
                                         <motion.div
                                             key="booth-putri"
-                                            initial={{ opacity: 0, x: 15 }}
-                                            animate={{ opacity: 1, x: 0 }}
-                                            exit={{ opacity: 0, x: -15 }}
+                                            initial={{ opacity: 0, y: 10 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            exit={{ opacity: 0, y: -10 }}
                                             transition={{ duration: 0.25 }}
                                             className="space-y-4"
                                         >
@@ -858,11 +1055,7 @@ export default function VoterDashboard({
                                                 </span>
                                                 {selectedPutri && (
                                                     <span className="text-right font-black text-emerald-800">
-                                                        Terpilih: No.{' '}
-                                                        {
-                                                            selectedPutri.candidate_number
-                                                        }{' '}
-                                                        · {selectedPutri.name}
+                                                        Terpilih: No. {selectedPutri.candidate_number} · {selectedPutri.name}
                                                     </span>
                                                 )}
                                             </div>
@@ -883,28 +1076,15 @@ export default function VoterDashboard({
                                                         : undefined
                                                 }
                                             >
-                                                {candidates_putri.map(
-                                                    (candidate) => (
-                                                        <VotingActionCard
-                                                            key={candidate.id}
-                                                            candidate={
-                                                                candidate
-                                                            }
-                                                            isSelected={
-                                                                selectedPutriId ===
-                                                                candidate.id
-                                                            }
-                                                            isVotingAllowed={
-                                                                isVotingAllowed
-                                                            }
-                                                            onSelect={() =>
-                                                                handleSelectPutri(
-                                                                    candidate.id,
-                                                                )
-                                                            }
-                                                        />
-                                                    ),
-                                                )}
+                                                {candidates_putri.map((candidate) => (
+                                                    <VotingActionCard
+                                                        key={candidate.id}
+                                                        candidate={candidate}
+                                                        isSelected={selectedPutriId === candidate.id}
+                                                        isVotingAllowed={isVotingAllowed}
+                                                        onSelect={() => handleSelectPutri(candidate.id)}
+                                                    />
+                                                ))}
                                             </div>
                                         </motion.div>
                                     )}
@@ -914,23 +1094,17 @@ export default function VoterDashboard({
                                 <div className="mt-8 flex flex-col items-center justify-between gap-4 border-t border-[#E8D9C4] pt-6 sm:flex-row">
                                     <div className="text-xs text-[#8B5A2B]">
                                         <p className="font-bold text-[#4A2E1B]">
-                                            Status Pilihan: {progressCount}/2
-                                            Terpilih (Sementara)
+                                            Status Pilihan: {progressCount}/2 Terpilih (Sementara)
                                         </p>
                                         <p className="mt-0.5">
-                                            Klik tombol simpan untuk memvalidasi
-                                            pilihan suara Anda ke kotak suara.
+                                            Klik tombol simpan untuk memvalidasi pilihan suara Anda ke kotak suara digital.
                                         </p>
                                     </div>
 
                                     <button
                                         type="button"
-                                        onClick={() =>
-                                            setIsConfirmModalOpen(true)
-                                        }
-                                        disabled={
-                                            !isBothSelected || !isVotingAllowed
-                                        }
+                                        onClick={() => setIsConfirmModalOpen(true)}
+                                        disabled={!isBothSelected || !isVotingAllowed}
                                         className={`flex cursor-pointer items-center justify-center gap-2 rounded-2xl px-7 py-3.5 text-xs font-black shadow-md transition-all sm:text-sm ${
                                             isBothSelected && isVotingAllowed
                                                 ? 'bg-[#2D5A27] text-white hover:scale-105 active:scale-95'
@@ -1233,6 +1407,8 @@ export default function VoterDashboard({
                             isBothSelected={isBothSelected}
                             progressCount={progressCount}
                             isVotingAllowed={isVotingAllowed}
+                            onNavigateHero={() => scrollToSection(heroRef)}
+                            onNavigateTentang={() => scrollToSection(tentangRef)}
                             onNavigateTataCara={() =>
                                 scrollToSection(tataCaraRef)
                             }
@@ -1252,6 +1428,108 @@ export default function VoterDashboard({
                         />
                     </SheetContent>
                 </Sheet>
+
+                {/* ═════════════════════════════════════════════════════════════
+                    8. FLOATING BOTTOM NAVIGATION BAR (KHUSUS MOBILE SCREEN)
+                ═════════════════════════════════════════════════════════════ */}
+                <div className="fixed bottom-3 right-3 left-3 z-30 lg:hidden">
+                    <motion.div
+                        initial={{ y: 50, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        transition={{ duration: 0.35, ease: 'easeOut' }}
+                        className="flex items-center justify-between rounded-2xl px-2.5 py-2 shadow-2xl backdrop-blur-xl"
+                        style={{
+                            background: 'rgba(45, 26, 10, 0.94)',
+                            border: '1.5px solid rgba(212, 175, 55, 0.35)',
+                            boxShadow: '0 12px 30px -4px rgba(0, 0, 0, 0.45)',
+                        }}
+                    >
+                        <motion.button
+                            type="button"
+                            whileTap={{ scale: 0.92 }}
+                            onClick={() => scrollToSection(heroRef)}
+                            className={`flex flex-1 flex-col items-center gap-0.5 rounded-xl py-1 text-[10px] font-bold transition-all ${
+                                activeSection === 'hero'
+                                    ? 'bg-[#D4AF37] text-[#2D1A0A]'
+                                    : 'text-[#D6C7B2] hover:text-[#FAF6F0]'
+                            }`}
+                        >
+                            <span className="text-sm">🏠</span>
+                            <span>Beranda</span>
+                        </motion.button>
+
+                        <motion.button
+                            type="button"
+                            whileTap={{ scale: 0.92 }}
+                            onClick={() => scrollToSection(tentangRef)}
+                            className={`flex flex-1 flex-col items-center gap-0.5 rounded-xl py-1 text-[10px] font-bold transition-all ${
+                                activeSection === 'tentang'
+                                    ? 'bg-[#D4AF37] text-[#2D1A0A]'
+                                    : 'text-[#D6C7B2] hover:text-[#FAF6F0]'
+                            }`}
+                        >
+                            <span className="text-sm">⚜️</span>
+                            <span>Tentang</span>
+                        </motion.button>
+
+                        <motion.button
+                            type="button"
+                            whileTap={{ scale: 0.92 }}
+                            onClick={() => scrollToSection(profilPutraRef)}
+                            className={`flex flex-1 flex-col items-center gap-0.5 rounded-xl py-1 text-[10px] font-bold transition-all ${
+                                activeSection === 'profil-putra'
+                                    ? 'bg-[#D4AF37] text-[#2D1A0A]'
+                                    : 'text-[#D6C7B2] hover:text-[#FAF6F0]'
+                            }`}
+                        >
+                            <span className="font-mono text-xs font-black">♂</span>
+                            <span>Putra</span>
+                        </motion.button>
+
+                        <motion.button
+                            type="button"
+                            whileTap={{ scale: 0.92 }}
+                            onClick={() => scrollToSection(profilPutriRef)}
+                            className={`flex flex-1 flex-col items-center gap-0.5 rounded-xl py-1 text-[10px] font-bold transition-all ${
+                                activeSection === 'profil-putri'
+                                    ? 'bg-[#D4AF37] text-[#2D1A0A]'
+                                    : 'text-[#D6C7B2] hover:text-[#FAF6F0]'
+                            }`}
+                        >
+                            <span className="font-mono text-xs font-black">♀</span>
+                            <span>Putri</span>
+                        </motion.button>
+
+                        <motion.button
+                            type="button"
+                            whileTap={{ scale: 0.92 }}
+                            onClick={() => scrollToSection(bilikSuaraRef)}
+                            className={`flex flex-1 flex-col items-center gap-0.5 rounded-xl px-2 py-1 text-[10px] font-black transition-all ${
+                                activeSection === 'bilik-suara'
+                                    ? 'bg-emerald-600 text-white shadow-md'
+                                    : 'bg-emerald-700/80 text-emerald-100'
+                            }`}
+                        >
+                            <div className="flex items-center gap-1">
+                                <Vote className="h-3 w-3" />
+                                <span className="rounded bg-black/25 px-1 py-0.2 text-[9px]">
+                                    {progressCount}/2
+                                </span>
+                            </div>
+                            <span>Bilik</span>
+                        </motion.button>
+
+                        <motion.button
+                            type="button"
+                            whileTap={{ scale: 0.92 }}
+                            onClick={() => setIsMobileDrawerOpen(true)}
+                            className="flex flex-1 flex-col items-center gap-0.5 rounded-xl py-1 text-[10px] font-bold text-[#D6C7B2] transition-all hover:text-[#FAF6F0]"
+                        >
+                            <Menu className="h-3.5 w-3.5" />
+                            <span>Menu</span>
+                        </motion.button>
+                    </motion.div>
+                </div>
             </div>
         </>
     );
@@ -1295,6 +1573,8 @@ function VoterSidebarContent({
     isBothSelected,
     progressCount,
     isVotingAllowed,
+    onNavigateHero,
+    onNavigateTentang,
     onNavigateTataCara,
     onNavigateProfilPutra,
     onNavigateProfilPutri,
@@ -1303,6 +1583,8 @@ function VoterSidebarContent({
 }: {
     voter: Props['voter'];
     activeSection:
+        | 'hero'
+        | 'tentang'
         | 'tata-cara'
         | 'profil-putra'
         | 'profil-putri'
@@ -1312,6 +1594,8 @@ function VoterSidebarContent({
     isBothSelected: boolean;
     progressCount: number;
     isVotingAllowed: boolean;
+    onNavigateHero: () => void;
+    onNavigateTentang: () => void;
     onNavigateTataCara: () => void;
     onNavigateProfilPutra: () => void;
     onNavigateProfilPutri: () => void;
@@ -1320,14 +1604,14 @@ function VoterSidebarContent({
 }) {
     return (
         <div className="space-y-4">
-            {/* Profil Pemilih Card */}
+            {/* Profil Pemilih (Sleek Modern Profile) */}
             <div
-                className="rounded-3xl p-4 text-xs shadow-2xs"
-                style={{ background: '#fff', border: '1.5px solid #E8D9C4' }}
+                className="rounded-2xl p-4 text-xs shadow-2xs"
+                style={{ background: '#fff', border: '1px solid #E8D9C4' }}
             >
                 <div className="flex items-center gap-3">
                     <div
-                        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl text-base font-black text-white shadow-xs"
+                        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-sm font-black text-white shadow-xs"
                         style={{
                             background:
                                 'linear-gradient(135deg, #4A2E1B 0%, #2D1A0A 100%)',
@@ -1337,7 +1621,7 @@ function VoterSidebarContent({
                     </div>
                     <div className="min-w-0 flex-1">
                         <span className="block text-[10px] font-bold tracking-wider text-neutral-400 uppercase">
-                            Pemilih Sah:
+                            Pemilih Sah
                         </span>
                         <p className="truncate text-sm font-black text-[#4A2E1B]">
                             {voter.name}
@@ -1345,44 +1629,76 @@ function VoterSidebarContent({
                         <p className="text-[11px] font-semibold text-[#8B5A2B]">
                             Kelas {voter.class} ·{' '}
                             <code className="font-mono text-neutral-600">
-                                {voter.username}
+                                @{voter.username}
                             </code>
                         </p>
                     </div>
                 </div>
 
-                <div className="mt-3 flex items-center justify-between border-t border-[#E8D9C4] pt-3">
+                <div className="mt-3 flex items-center justify-between border-t border-[#E8D9C4] pt-2.5">
                     <div className="flex items-center gap-1.5 text-[11px] font-bold text-emerald-800">
                         <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-500" />
                         <span>Hak Suara Aktif</span>
                     </div>
-                    <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-extrabold text-emerald-800 uppercase">
-                        Belum Memilih
+                    <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-extrabold text-emerald-800 uppercase border border-emerald-200">
+                        {voter.has_voted ? 'Sudah Digunakan' : 'Belum Memilih'}
                     </span>
                 </div>
             </div>
 
             {/* Stepper Navigasi Halaman (Scroll-Spy) */}
             <div
-                className="space-y-1 rounded-3xl p-3.5 shadow-2xs"
-                style={{ background: '#fff', border: '1.5px solid #E8D9C4' }}
+                className="space-y-1 rounded-2xl p-2.5 shadow-2xs"
+                style={{ background: '#fff', border: '1px solid #E8D9C4' }}
             >
-                <span className="mb-1.5 block px-2 text-[10px] font-extrabold tracking-wider text-[#8B5A2B] uppercase">
-                    Alur Pemilihan
+                <span className="mb-1 block px-2 text-[10px] font-extrabold tracking-wider text-[#8B5A2B] uppercase">
+                    Alur & Navigasi
                 </span>
 
                 <button
                     type="button"
+                    onClick={onNavigateHero}
+                    className={`flex w-full cursor-pointer items-center justify-between rounded-xl px-3 py-2 text-xs font-bold transition-all ${
+                        activeSection === 'hero'
+                            ? 'bg-[#4A2E1B] text-[#D4AF37] shadow-xs'
+                            : 'text-[#4A2E1B] hover:bg-[#FAF6F0]'
+                    }`}
+                >
+                    <span className="flex items-center gap-2">
+                        <Sparkles className="h-4 w-4 text-[#D4AF37]" />
+                        <span>Sapaan Pemilih</span>
+                    </span>
+                    <ChevronRight className="h-3.5 w-3.5 opacity-60" />
+                </button>
+
+                <button
+                    type="button"
+                    onClick={onNavigateTentang}
+                    className={`flex w-full cursor-pointer items-center justify-between rounded-xl px-3 py-2 text-xs font-bold transition-all ${
+                        activeSection === 'tentang'
+                            ? 'bg-[#4A2E1B] text-[#D4AF37] shadow-xs'
+                            : 'text-[#4A2E1B] hover:bg-[#FAF6F0]'
+                    }`}
+                >
+                    <span className="flex items-center gap-2">
+                        <span>⚜️</span>
+                        <span>Tentang Platform</span>
+                    </span>
+                    <ChevronRight className="h-3.5 w-3.5 opacity-60" />
+                </button>
+
+                <button
+                    type="button"
                     onClick={onNavigateTataCara}
-                    className={`flex w-full cursor-pointer items-center justify-between rounded-2xl px-3 py-2.5 text-xs font-bold transition-all ${
+                    className={`flex w-full cursor-pointer items-center justify-between rounded-xl px-3 py-2 text-xs font-bold transition-all ${
                         activeSection === 'tata-cara'
                             ? 'bg-[#4A2E1B] text-[#D4AF37] shadow-xs'
-                            : 'text-[#4A2E1B] hover:bg-[#F5EFE6]'
+                            : 'text-[#4A2E1B] hover:bg-[#FAF6F0]'
                     }`}
                 >
                     <span className="flex items-center gap-2">
                         <Compass className="h-4 w-4" />
-                        <span>1. Panduan & Aturan</span>
+                        <span>Tata Cara Voting</span>
                     </span>
                     <ChevronRight className="h-3.5 w-3.5 opacity-60" />
                 </button>
@@ -1390,15 +1706,15 @@ function VoterSidebarContent({
                 <button
                     type="button"
                     onClick={onNavigateProfilPutra}
-                    className={`flex w-full cursor-pointer items-center justify-between rounded-2xl px-3 py-2.5 text-xs font-bold transition-all ${
+                    className={`flex w-full cursor-pointer items-center justify-between rounded-xl px-3 py-2 text-xs font-bold transition-all ${
                         activeSection === 'profil-putra'
                             ? 'bg-[#4A2E1B] text-[#D4AF37] shadow-xs'
-                            : 'text-[#4A2E1B] hover:bg-[#F5EFE6]'
+                            : 'text-[#4A2E1B] hover:bg-[#FAF6F0]'
                     }`}
                 >
                     <span className="flex items-center gap-2">
                         <span className="font-mono text-sm">♂</span>
-                        <span>2. Visi Misi Putra</span>
+                        <span>Visi Misi Putra</span>
                     </span>
                     {selectedPutra ? (
                         <span className="flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500 text-[10px] text-white">
@@ -1412,15 +1728,15 @@ function VoterSidebarContent({
                 <button
                     type="button"
                     onClick={onNavigateProfilPutri}
-                    className={`flex w-full cursor-pointer items-center justify-between rounded-2xl px-3 py-2.5 text-xs font-bold transition-all ${
+                    className={`flex w-full cursor-pointer items-center justify-between rounded-xl px-3 py-2 text-xs font-bold transition-all ${
                         activeSection === 'profil-putri'
                             ? 'bg-[#4A2E1B] text-[#D4AF37] shadow-xs'
-                            : 'text-[#4A2E1B] hover:bg-[#F5EFE6]'
+                            : 'text-[#4A2E1B] hover:bg-[#FAF6F0]'
                     }`}
                 >
                     <span className="flex items-center gap-2">
                         <span className="font-mono text-sm">♀</span>
-                        <span>3. Visi Misi Putri</span>
+                        <span>Visi Misi Putri</span>
                     </span>
                     {selectedPutri ? (
                         <span className="flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500 text-[10px] text-white">
@@ -1434,7 +1750,7 @@ function VoterSidebarContent({
                 <button
                     type="button"
                     onClick={onNavigateBilikSuara}
-                    className={`flex w-full cursor-pointer items-center justify-between rounded-2xl px-3 py-2.5 text-xs font-bold transition-all ${
+                    className={`flex w-full cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-xs font-bold transition-all ${
                         activeSection === 'bilik-suara'
                             ? 'bg-[#2D5A27] text-white shadow-xs'
                             : 'bg-emerald-50/60 text-[#2D5A27] hover:bg-emerald-100/60'
@@ -1442,7 +1758,7 @@ function VoterSidebarContent({
                 >
                     <span className="flex items-center gap-2">
                         <Vote className="h-4 w-4" />
-                        <span>4. Bilik Pencoblosan</span>
+                        <span>Bilik Pencoblosan</span>
                     </span>
                     <span className="rounded bg-white/20 px-1.5 py-0.5 text-[10px] font-black">
                         {progressCount}/2
@@ -1452,28 +1768,28 @@ function VoterSidebarContent({
 
             {/* Kotak Status Pilihan (Draf Suara Pemilih) */}
             <div
-                className="space-y-3 rounded-3xl p-4 text-xs shadow-2xs"
-                style={{ background: '#fff', border: '1.5px solid #E8D9C4' }}
+                className="space-y-2.5 rounded-2xl p-3.5 text-xs shadow-2xs"
+                style={{ background: '#fff', border: '1px solid #E8D9C4' }}
             >
                 <div className="flex items-center justify-between">
                     <span className="block font-extrabold text-[#4A2E1B]">
-                        Draf Pilihan Anda:
+                        Draf Pilihan Anda
                     </span>
-                    <span className="text-[11px] font-black text-[#8B5A2B]">
+                    <span className="text-[10px] font-black text-[#8B5A2B]">
                         {isBothSelected ? 'Siap Validasi ✅' : 'Belum Lengkap'}
                     </span>
                 </div>
 
-                <div className="space-y-2">
+                <div className="space-y-1.5">
                     <div
-                        className="flex items-center justify-between rounded-2xl p-2.5"
+                        className="flex items-center justify-between rounded-xl p-2"
                         style={{
                             background: '#FAF6F0',
                             border: '1px solid #E8D9C4',
                         }}
                     >
                         <span className="text-[11px] font-semibold text-neutral-500">
-                            Calon Putra:
+                            Putra:
                         </span>
                         <strong
                             className={
@@ -1483,20 +1799,20 @@ function VoterSidebarContent({
                             }
                         >
                             {selectedPutra
-                                ? `#${selectedPutra.candidate_number} ${selectedPutra.name}`
+                                ? `#${selectedPutra.candidate_number} ${selectedPutra.name.split(' ')[0]}`
                                 : 'Belum'}
                         </strong>
                     </div>
 
                     <div
-                        className="flex items-center justify-between rounded-2xl p-2.5"
+                        className="flex items-center justify-between rounded-xl p-2"
                         style={{
                             background: '#FAF6F0',
                             border: '1px solid #E8D9C4',
                         }}
                     >
                         <span className="text-[11px] font-semibold text-neutral-500">
-                            Calon Putri:
+                            Putri:
                         </span>
                         <strong
                             className={
@@ -1506,7 +1822,7 @@ function VoterSidebarContent({
                             }
                         >
                             {selectedPutri
-                                ? `#${selectedPutri.candidate_number} ${selectedPutri.name}`
+                                ? `#${selectedPutri.candidate_number} ${selectedPutri.name.split(' ')[0]}`
                                 : 'Belum'}
                         </strong>
                     </div>
@@ -1515,11 +1831,11 @@ function VoterSidebarContent({
 
             {/* Jaminan Luber & Jurdil */}
             <div
-                className="space-y-1.5 rounded-3xl p-3.5 text-[11px] text-[#8B5A2B]"
-                style={{ background: '#fff', border: '1.5px solid #E8D9C4' }}
+                className="space-y-1 rounded-2xl p-3 text-[11px] text-[#8B5A2B]"
+                style={{ background: '#fff', border: '1px solid #E8D9C4' }}
             >
                 <div className="flex items-center gap-1.5 font-black text-[#4A2E1B]">
-                    <Shield className="h-4 w-4 text-[#D4AF37]" />
+                    <Shield className="h-3.5 w-3.5 text-[#D4AF37]" />
                     <span>Jaminan Asas LUBER JURDIL</span>
                 </div>
                 <p className="leading-snug">
@@ -1532,8 +1848,8 @@ function VoterSidebarContent({
             <button
                 type="button"
                 onClick={onRequestLogout}
-                className="flex w-full cursor-pointer items-center justify-center gap-1.5 rounded-2xl py-2.5 text-xs font-bold text-rose-600 transition-colors hover:bg-rose-50"
-                style={{ border: '1.5px solid #FEE2E2' }}
+                className="flex w-full cursor-pointer items-center justify-center gap-1.5 rounded-xl py-2.5 text-xs font-bold text-rose-600 transition-colors hover:bg-rose-50"
+                style={{ border: '1px solid #FEE2E2' }}
             >
                 <LogOut className="h-4 w-4" />
                 <span>Keluar dari Bilik Suara</span>
@@ -1542,7 +1858,7 @@ function VoterSidebarContent({
     );
 }
 
-// ── COMPONENT 3: KARTU MEMBACA VISI & MISI KANDIDAT (MURNI LITERASI - TANPA TOMBOL VOTING) ──
+// ── COMPONENT 3: KARTU MEMBACA VISI & MISI KANDIDAT (EDITORIAL OPEN LAYOUT) ──
 function CandidateReadingCard({
     candidate,
     category,
@@ -1554,92 +1870,80 @@ function CandidateReadingCard({
 
     return (
         <div
-            className="w-full rounded-3xl bg-white p-5 shadow-xs transition-all sm:p-7"
+            className="w-full rounded-[2rem] bg-white p-6 shadow-xs transition-all sm:p-8"
             style={{
-                border: '1.5px solid #E8D9C4',
+                border: '1px solid #E8D9C4',
             }}
         >
             <div className="flex flex-col items-center">
-                {/* Foto Calon di Tengah (Besar & Jelas) */}
-                <div className="flex justify-center">
+                {/* Foto Calon di Tengah dengan Badge Nomor Melayang */}
+                <div className="relative">
                     {candidate.photo_url ? (
                         <img
                             src={candidate.photo_url}
                             alt={candidate.name}
-                            className="h-64 w-48 rounded-3xl border-2 border-[#E8D9C4] object-cover shadow-md sm:h-76 sm:w-56 md:h-84 md:w-64"
+                            className="h-68 w-52 rounded-2xl object-cover shadow-md ring-4 ring-[#FAF6F0] sm:h-80 sm:w-60"
                         />
                     ) : (
                         <div
-                            className="flex h-64 w-48 flex-col items-center justify-center rounded-3xl border border-[#E8D9C4] shadow-inner sm:h-76 sm:w-56 md:h-84 md:w-64"
-                            style={{ background: '#F5EFE6', color: '#4A2E1B' }}
+                            className="flex h-68 w-52 flex-col items-center justify-center rounded-2xl shadow-inner ring-4 ring-[#FAF6F0] sm:h-80 sm:w-60"
+                            style={{ background: '#FAF6F0', color: '#4A2E1B' }}
                         >
                             <span className="text-4xl font-black tracking-wider sm:text-5xl">
                                 {candidate.name.slice(0, 2).toUpperCase()}
                             </span>
                         </div>
                     )}
+                    {/* Badge Nomor Urut Melayang */}
+                    <div
+                        className="absolute -top-2.5 -right-2.5 flex h-9 w-9 items-center justify-center rounded-full text-xs font-black text-white shadow-md ring-2 ring-white"
+                        style={{ background: themeColor }}
+                    >
+                        #{candidate.candidate_number}
+                    </div>
                 </div>
 
-                {/* Identitas Kandidat di Tengah (Simetris & Rapi) */}
-                <div className="mt-4 w-full max-w-xl px-2 text-center">
-                    <div className="mb-1.5 flex flex-wrap items-center justify-center gap-2">
-                        <span
-                            className="inline-block rounded-lg px-2.5 py-0.5 text-xs font-black text-white shadow-2xs"
-                            style={{ background: themeColor }}
-                        >
-                            No. {candidate.candidate_number}
-                        </span>
-                        <span
-                            className="inline-block rounded-lg px-2.5 py-0.5 text-xs font-bold"
-                            style={{
-                                background: '#FAF6F0',
-                                color: '#8B5A2B',
-                                border: '1px solid #E8D9C4',
-                            }}
-                        >
-                            Kelas {candidate.class}
-                        </span>
-                    </div>
+                {/* Identitas Kandidat */}
+                <div className="mt-5 w-full max-w-xl text-center">
+                    <span
+                        className="inline-block rounded-full px-3 py-0.5 text-xs font-bold"
+                        style={{
+                            background: '#FAF6F0',
+                            color: '#8B5A2B',
+                            border: '1px solid #E8D9C4',
+                        }}
+                    >
+                        Kelas {candidate.class} · Calon Pradana {category === 'putra' ? 'Putra' : 'Putri'}
+                    </span>
 
-                    <h4 className="text-xl font-black tracking-tight text-[#4A2E1B] sm:text-2xl">
+                    <h4 className="mt-2 text-xl font-black tracking-tight text-[#4A2E1B] sm:text-2xl">
                         {candidate.name}
                     </h4>
                 </div>
 
-                {/* Kotak Visi & Misi Terbuka Rapi & Lebar */}
-                <div className="mx-auto mt-5 w-full max-w-xl space-y-3.5">
-                    {/* Kotak Visi */}
+                {/* Visi & Misi Terbuka Lapang (Bukan Kotak-Kotak Bertumpuk) */}
+                <div className="mt-6 w-full max-w-xl space-y-4 text-left">
+                    {/* Visi Kepemimpinan */}
                     <div
-                        className="rounded-2xl p-4 text-center text-xs shadow-2xs sm:p-5 sm:text-sm"
-                        style={{
-                            background: '#FAF6F0',
-                            border: '1px solid #E8D9C4',
-                        }}
+                        className="rounded-2xl border-l-4 p-4 shadow-2xs"
+                        style={{ background: '#FAF6F0', borderColor: '#D4AF37' }}
                     >
-                        <span className="mb-1.5 block text-center font-black tracking-wider text-[#8B5A2B] uppercase">
-                            Visi
+                        <span className="mb-1 block text-xs font-black tracking-wider text-[#8B5A2B] uppercase">
+                            Visi Kepemimpinan
                         </span>
-                        <p className="text-center leading-relaxed font-medium whitespace-pre-line text-[#4A2E1B]">
-                            {candidate.vision ||
-                                'Visi belum diunggah oleh panitia.'}
+                        <p className="text-xs italic leading-relaxed text-[#4A2E1B] sm:text-sm">
+                            &ldquo;{candidate.vision || 'Visi belum diunggah oleh panitia.'}&rdquo;
                         </p>
                     </div>
 
-                    {/* Kotak Misi */}
-                    <div
-                        className="rounded-2xl p-4 text-center text-xs shadow-2xs sm:p-5 sm:text-sm"
-                        style={{
-                            background: '#FAF6F0',
-                            border: '1px solid #E8D9C4',
-                        }}
-                    >
-                        <span className="mb-2 block text-center font-black tracking-wider text-[#8B5A2B] uppercase">
-                            Misi & Program Kerja
+                    {/* Misi & Program Kerja */}
+                    <div className="px-1 pt-1">
+                        <span className="mb-2 block text-xs font-black tracking-wider text-[#8B5A2B] uppercase">
+                            Misi & Rencana Kerja
                         </span>
-                        <div className="mx-auto max-w-md text-left">
-                            <p className="leading-relaxed font-medium whitespace-pre-line text-[#4A2E1B]">
-                                {candidate.mission ||
-                                    'Misi belum diunggah oleh panitia.'}
+                        <div className="text-xs leading-relaxed font-medium text-[#4A2E1B] sm:text-sm">
+                            <p className="whitespace-pre-line leading-relaxed">
+                                {candidate.mission || 'Misi belum diunggah oleh panitia.'}
                             </p>
                         </div>
                     </div>
@@ -1664,7 +1968,7 @@ function CandidateSlider({
         return (
             <div
                 className="rounded-2xl bg-white p-6 text-center shadow-xs"
-                style={{ border: '1.5px solid #E8D9C4' }}
+                style={{ border: '1px solid #E8D9C4' }}
             >
                 <p className="text-sm font-medium text-[#8B5A2B]">
                     Belum ada calon terdaftar pada kategori ini.
@@ -1726,7 +2030,7 @@ function CandidateSlider({
                                 key={c.id}
                                 type="button"
                                 onClick={() => scrollToCandidate(idx)}
-                                className={`flex flex-1 cursor-pointer items-center justify-center gap-1.5 truncate rounded-xl px-3 py-2 text-center text-xs font-black transition-all sm:min-w-[120px] sm:flex-initial ${
+                                className={`flex flex-1 cursor-pointer items-center justify-center gap-1.5 truncate rounded-xl px-3.5 py-2 text-center text-xs font-black transition-all sm:min-w-[120px] sm:flex-initial ${
                                     isActive
                                         ? 'text-white shadow-xs'
                                         : 'border border-[#E8D9C4] bg-white text-[#4A2E1B] hover:bg-[#FAF6F0]'
@@ -1835,7 +2139,7 @@ function CandidateSlider({
     );
 }
 
-// ── COMPONENT 4: KARTU AKSI PENCOBLOSAN (DI DALAM TAB BILIK SUARA - BEBAS DIGANTI) ──
+// ── COMPONENT 4: KARTU AKSI PENCOBLOSAN (PROFESIONAL, INTERAKTIF, ELEGAN) ──
 function VotingActionCard({
     candidate,
     isSelected,
@@ -1850,55 +2154,64 @@ function VotingActionCard({
     return (
         <motion.div
             whileHover={
-                isVotingAllowed ? { y: -3, transition: { duration: 0.2 } } : {}
+                isVotingAllowed ? { y: -4, transition: { duration: 0.25 } } : {}
             }
             whileTap={isVotingAllowed ? { scale: 0.98 } : {}}
             onClick={isVotingAllowed ? onSelect : undefined}
-            className={`group relative flex w-full flex-col justify-between overflow-hidden rounded-3xl p-5 shadow-xs transition-all sm:w-60 ${
+            className={`group relative flex w-full flex-col justify-between overflow-hidden rounded-[1.75rem] p-5 transition-all duration-300 sm:w-64 ${
                 !isVotingAllowed
-                    ? 'cursor-not-allowed border-neutral-300 bg-neutral-100 opacity-60'
+                    ? 'cursor-not-allowed border-neutral-200 bg-neutral-100 opacity-60'
                     : isSelected
-                      ? 'cursor-pointer bg-[#2D5A27] text-white shadow-lg ring-3 ring-[#2D5A27]'
-                      : 'cursor-pointer bg-white hover:shadow-md'
+                      ? 'cursor-pointer bg-white shadow-xl ring-2 ring-emerald-600'
+                      : 'cursor-pointer bg-white shadow-xs hover:border-[#8B5A2B]/40 hover:shadow-lg'
             }`}
             style={{
                 border: isSelected
-                    ? '2.5px solid #2D5A27'
-                    : '1.5px solid #E8D9C4',
-                color: isSelected ? '#fff' : '#4A2E1B',
+                    ? '1.5px solid #059669'
+                    : '1px solid #E8D9C4',
             }}
         >
             <div>
-                {/* Status Pilihan Terpilih (jika aktif) */}
-                <div className="mb-1 flex h-6 items-center justify-end">
+                {/* Status Pilihan Terpilih Badge */}
+                <div className="mb-2 flex h-6 items-center justify-between">
+                    <span
+                        className={`rounded-md px-2 py-0.5 text-[10px] font-black ${
+                            isSelected
+                                ? 'bg-emerald-100 text-emerald-800'
+                                : 'bg-[#FAF6F0] text-[#8B5A2B] border border-[#E8D9C4]'
+                        }`}
+                    >
+                        No. {candidate.candidate_number}
+                    </span>
+
                     {isSelected && (
                         <motion.span
                             initial={{ scale: 0.8, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
-                            className="flex items-center gap-1 rounded-full bg-white/25 px-2.5 py-0.5 text-[10px] font-black text-white shadow-2xs backdrop-blur-xs"
+                            className="flex items-center gap-1 rounded-full bg-emerald-600 px-2.5 py-0.5 text-[10px] font-extrabold text-white shadow-xs"
                         >
-                            ✓ Dipilih Sementara
+                            ✓ Terpilih
                         </motion.span>
                     )}
                 </div>
 
                 {/* Foto Calon */}
-                <div className="my-1 flex justify-center">
+                <div className="my-2 flex justify-center">
                     {candidate.photo_url ? (
                         <img
                             src={candidate.photo_url}
                             alt={candidate.name}
-                            className={`h-28 w-28 rounded-2xl border-2 object-cover shadow-sm ${
+                            className={`h-32 w-32 rounded-2xl object-cover shadow-sm transition-transform duration-300 group-hover:scale-105 ${
                                 isSelected
-                                    ? 'border-white/70'
-                                    : 'border-[#E8D9C4]'
+                                    ? 'ring-3 ring-emerald-500'
+                                    : 'border border-[#E8D9C4]'
                             }`}
                         />
                     ) : (
                         <div
-                            className={`flex h-28 w-28 items-center justify-center rounded-2xl text-2xl font-black shadow-inner ${
+                            className={`flex h-32 w-32 items-center justify-center rounded-2xl text-2xl font-black shadow-inner transition-transform duration-300 group-hover:scale-105 ${
                                 isSelected
-                                    ? 'bg-white/10 text-white'
+                                    ? 'bg-emerald-50 text-emerald-800 ring-3 ring-emerald-500'
                                     : 'bg-[#FAF6F0] text-[#4A2E1B]'
                             }`}
                         >
@@ -1907,43 +2220,19 @@ function VotingActionCard({
                     )}
                 </div>
 
-                {/* Nama & Nomor/Kelas */}
+                {/* Nama & Kelas */}
                 <div className="mt-3 text-center">
-                    <h4 className="truncate text-sm leading-tight font-black">
+                    <h4 className="truncate text-sm font-black text-[#4A2E1B]">
                         {candidate.name}
                     </h4>
-                    <div className="mt-1.5 flex items-center justify-center gap-1.5">
-                        <span
-                            className={`inline-block rounded-md px-2 py-0.5 text-[10px] font-black ${
-                                isSelected
-                                    ? 'bg-white/20 text-white'
-                                    : 'border border-[#E8D9C4] bg-[#FAF6F0] text-[#8B5A2B]'
-                            }`}
-                        >
-                            No. {candidate.candidate_number}
-                        </span>
-                        <span
-                            className={`inline-block rounded-md px-2 py-0.5 text-[10px] font-bold ${
-                                isSelected
-                                    ? 'bg-white/15 text-white'
-                                    : 'border border-[#E8D9C4] bg-[#FAF6F0] text-[#8B5A2B]'
-                            }`}
-                        >
-                            Kelas {candidate.class}
-                        </span>
-                    </div>
+                    <p className="mt-0.5 text-[11px] font-medium text-[#8B5A2B]">
+                        Kelas {candidate.class}
+                    </p>
                 </div>
             </div>
 
             {/* Tombol Pilih / Ganti */}
-            <div
-                className="mt-5 border-t pt-3.5"
-                style={{
-                    borderColor: isSelected
-                        ? 'rgba(255,255,255,0.2)'
-                        : '#F5EFE6',
-                }}
-            >
+            <div className="mt-5 border-t border-[#F5EFE6] pt-3.5">
                 <button
                     type="button"
                     disabled={!isVotingAllowed}
@@ -1951,11 +2240,11 @@ function VotingActionCard({
                         e.stopPropagation();
                         if (isVotingAllowed) onSelect();
                     }}
-                    className={`flex w-full cursor-pointer items-center justify-center gap-1.5 rounded-2xl py-3 text-xs font-black shadow-xs transition-all ${
+                    className={`flex w-full cursor-pointer items-center justify-center gap-1.5 rounded-xl py-2.5 text-xs font-black shadow-xs transition-all ${
                         !isVotingAllowed
                             ? 'cursor-not-allowed bg-neutral-300 text-neutral-500'
                             : isSelected
-                              ? 'bg-white font-black text-[#2D5A27] shadow-sm hover:bg-neutral-100'
+                              ? 'bg-emerald-600 text-white shadow-sm hover:bg-emerald-700'
                               : 'bg-[#4A2E1B] text-white hover:bg-[#3D2211]'
                     }`}
                 >
@@ -1966,8 +2255,8 @@ function VotingActionCard({
                         </>
                     ) : isSelected ? (
                         <>
-                            <Check className="h-4 w-4 text-[#2D5A27]" />
-                            <span>✅ Terpilih (Klik lain untuk ganti)</span>
+                            <Check className="h-4 w-4" />
+                            <span>✓ Pilihan Anda (Klik lain untuk ganti)</span>
                         </>
                     ) : (
                         <>

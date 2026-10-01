@@ -90,6 +90,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/admin/dpt', [DptController::class, 'store'])->name('admin.dpt.store');
     Route::put('/admin/dpt/{id}', [DptController::class, 'update'])->name('admin.dpt.update');
     Route::post('/admin/dpt/{id}/reset-token', [DptController::class, 'resetToken'])->name('admin.dpt.reset-token');
+    Route::post('/admin/dpt/{id}/reset-status', [DptController::class, 'resetStatus'])->name('admin.dpt.reset-status');
+    Route::post('/admin/dpt/reset-status', [DptController::class, 'resetAllStatus'])->name('admin.dpt.reset-all-status');
+    Route::post('/admin/dpt/reset-tokens', [DptController::class, 'resetAllTokens'])->name('admin.dpt.reset-all-tokens');
     Route::delete('/admin/dpt/{id}', [DptController::class, 'destroy'])->name('admin.dpt.destroy');
     Route::delete('/admin/dpt', [DptController::class, 'destroyAll'])->name('admin.dpt.destroy-all');
     Route::post('/admin/dpt/import', [DptController::class, 'importCsv'])->name('admin.dpt.import');
@@ -102,6 +105,8 @@ Route::middleware(['auth'])->group(function () {
 
     // Audit Log
     Route::get('/admin/audit-log', [AuditLogController::class, 'index'])->name('admin.audit-log');
+    Route::delete('/admin/audit-log/{id}', [AuditLogController::class, 'destroy'])->name('admin.audit-log.destroy');
+    Route::delete('/admin/audit-log', [AuditLogController::class, 'destroyAll'])->name('admin.audit-log.destroy-all');
 
     // Pengaturan
     Route::get('/admin/pengaturan', [PengaturanController::class, 'index'])->name('admin.pengaturan');

@@ -197,9 +197,9 @@ export default function KandidatPage({
                         <span
                             className="rounded-full px-3 py-1 text-xs font-bold"
                             style={{
-                                background: isLocked ? '#FEF2F2' : '#EFF6FF',
-                                color: isLocked ? '#B91C1C' : '#1D4ED8',
-                                border: `1px solid ${isLocked ? '#FECACA' : '#BFDBFE'}`,
+                                background: isLocked ? '#FEF2F2' : '#F5EFE6',
+                                color: isLocked ? '#B91C1C' : '#8B5A2B',
+                                border: `1px solid ${isLocked ? '#FECACA' : '#E8D9C4'}`,
                             }}
                         >
                             {isLocked
@@ -239,15 +239,15 @@ export default function KandidatPage({
                         <div
                             className="flex items-center justify-between rounded-2xl px-5 py-4 shadow-2xs"
                             style={{
-                                background: '#EFF6FF',
-                                border: '1px solid #BFDBFE',
+                                background: '#F5EFE6',
+                                border: '1px solid #E8D9C4',
                             }}
                         >
                             <div className="flex items-center gap-3">
                                 <div
                                     className="flex h-11 w-11 items-center justify-center rounded-xl shadow-xs"
                                     style={{
-                                        background: '#1D4ED8',
+                                        background: '#6F4423',
                                         color: '#fff',
                                     }}
                                 >
@@ -256,11 +256,11 @@ export default function KandidatPage({
                                 <div>
                                     <p
                                         className="text-base font-extrabold"
-                                        style={{ color: '#1E3A8A' }}
+                                        style={{ color: '#4A2E1B' }}
                                     >
                                         Calon Pradana Putra
                                     </p>
-                                    <p className="text-xs font-semibold text-blue-600">
+                                    <p className="text-xs font-semibold text-[#8B5A2B]">
                                         {kandidat_putra.length} kandidat
                                         terdaftar
                                     </p>
@@ -271,7 +271,7 @@ export default function KandidatPage({
                                 <button
                                     onClick={() => handleOpenAdd('putra')}
                                     className="flex items-center gap-1.5 rounded-xl px-4 py-2 text-xs font-bold text-white shadow-xs transition-transform hover:scale-105 active:scale-95"
-                                    style={{ background: '#1D4ED8' }}
+                                    style={{ background: '#6F4423' }}
                                 >
                                     <Plus className="h-4 w-4" />
                                     Tambah Putra
@@ -319,8 +319,8 @@ export default function KandidatPage({
                                             <div
                                                 className="relative flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-xl shadow-2xs"
                                                 style={{
-                                                    background: '#EFF6FF',
-                                                    border: '2px solid #BFDBFE',
+                                                    background: '#FAF6F0',
+                                                    border: '2px solid #E8D9C4',
                                                 }}
                                             >
                                                 {c.photo_url ? (
@@ -337,7 +337,7 @@ export default function KandidatPage({
                                                 <span
                                                     className="py-0.2 absolute -top-1 -left-1 rounded-full px-1.5 text-[9px] font-black text-white"
                                                     style={{
-                                                        background: '#1D4ED8',
+                                                        background: '#6F4423',
                                                     }}
                                                 >
                                                     #{c.candidate_number}
@@ -350,8 +350,8 @@ export default function KandidatPage({
                                                         className="rounded-full px-2 py-0.5 text-[10px] font-black"
                                                         style={{
                                                             background:
-                                                                '#1D4ED815',
-                                                            color: '#1D4ED8',
+                                                                '#6F442315',
+                                                            color: '#6F4423',
                                                         }}
                                                     >
                                                         Kandidat 0
@@ -393,7 +393,7 @@ export default function KandidatPage({
                                                         onClick={() =>
                                                             handleOpenEdit(c)
                                                         }
-                                                        className="rounded-lg p-2 text-blue-600 transition-colors hover:bg-blue-50"
+                                                        className="rounded-lg p-2 text-[#8B5A2B] transition-colors hover:bg-[#F5EFE6]"
                                                         title="Edit Kandidat"
                                                     >
                                                         <Edit2 className="h-4 w-4" />
@@ -422,15 +422,15 @@ export default function KandidatPage({
                         <div
                             className="flex items-center justify-between rounded-2xl px-5 py-4 shadow-2xs"
                             style={{
-                                background: '#FDF2F8',
-                                border: '1px solid #FBCFE8',
+                                background: '#FAF6F0',
+                                border: '1px solid #E8D9C4',
                             }}
                         >
                             <div className="flex items-center gap-3">
                                 <div
                                     className="flex h-11 w-11 items-center justify-center rounded-xl shadow-xs"
                                     style={{
-                                        background: '#BE185D',
+                                        background: '#8B5A2B',
                                         color: '#fff',
                                     }}
                                 >
@@ -439,11 +439,11 @@ export default function KandidatPage({
                                 <div>
                                     <p
                                         className="text-base font-extrabold"
-                                        style={{ color: '#831843' }}
+                                        style={{ color: '#4A2E1B' }}
                                     >
                                         Calon Pradana Putri
                                     </p>
-                                    <p className="text-xs font-semibold text-pink-600">
+                                    <p className="text-xs font-semibold text-[#8B5A2B]">
                                         {kandidat_putri.length} kandidat
                                         terdaftar
                                     </p>
@@ -454,7 +454,7 @@ export default function KandidatPage({
                                 <button
                                     onClick={() => handleOpenAdd('putri')}
                                     className="flex items-center gap-1.5 rounded-xl px-4 py-2 text-xs font-bold text-white shadow-xs transition-transform hover:scale-105 active:scale-95"
-                                    style={{ background: '#BE185D' }}
+                                    style={{ background: '#8B5A2B' }}
                                 >
                                     <Plus className="h-4 w-4" />
                                     Tambah Putri
@@ -502,8 +502,8 @@ export default function KandidatPage({
                                             <div
                                                 className="relative flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-xl shadow-2xs"
                                                 style={{
-                                                    background: '#FDF2F8',
-                                                    border: '2px solid #FBCFE8',
+                                                    background: '#FAF6F0',
+                                                    border: '2px solid #E8D9C4',
                                                 }}
                                             >
                                                 {c.photo_url ? (
@@ -520,7 +520,7 @@ export default function KandidatPage({
                                                 <span
                                                     className="py-0.2 absolute -top-1 -left-1 rounded-full px-1.5 text-[9px] font-black text-white"
                                                     style={{
-                                                        background: '#BE185D',
+                                                        background: '#8B5A2B',
                                                     }}
                                                 >
                                                     #{c.candidate_number}
@@ -533,8 +533,8 @@ export default function KandidatPage({
                                                         className="rounded-full px-2 py-0.5 text-[10px] font-black"
                                                         style={{
                                                             background:
-                                                                '#BE185D15',
-                                                            color: '#BE185D',
+                                                                '#8B5A2B15',
+                                                            color: '#8B5A2B',
                                                         }}
                                                     >
                                                         Kandidat 0
@@ -576,7 +576,7 @@ export default function KandidatPage({
                                                         onClick={() =>
                                                             handleOpenEdit(c)
                                                         }
-                                                        className="rounded-lg p-2 text-blue-600 transition-colors hover:bg-blue-50"
+                                                        className="rounded-lg p-2 text-[#8B5A2B] transition-colors hover:bg-[#F5EFE6]"
                                                         title="Edit Kandidat"
                                                     >
                                                         <Edit2 className="h-4 w-4" />
@@ -802,8 +802,8 @@ export default function KandidatPage({
                                 style={{
                                     background:
                                         formCategory === 'putra'
-                                            ? '#1D4ED8'
-                                            : '#BE185D',
+                                            ? '#6F4423'
+                                            : '#8B5A2B',
                                 }}
                             >
                                 Simpan Data Kandidat
@@ -839,11 +839,7 @@ export default function KandidatPage({
                                         <div
                                             className="flex h-full w-full items-center justify-center text-3xl"
                                             style={{
-                                                background:
-                                                    viewCandidate.category ===
-                                                    'putra'
-                                                        ? '#1D4ED815'
-                                                        : '#BE185D15',
+                                                background: '#FAF6F0',
                                             }}
                                         >
                                             {viewCandidate.category === 'putra'
@@ -856,16 +852,9 @@ export default function KandidatPage({
                                     <span
                                         className="rounded-full px-2 py-0.5 text-[10px] font-black tracking-wider uppercase"
                                         style={{
-                                            background:
-                                                viewCandidate.category ===
-                                                'putra'
-                                                    ? '#EFF6FF'
-                                                    : '#FDF2F8',
-                                            color:
-                                                viewCandidate.category ===
-                                                'putra'
-                                                    ? '#1D4ED8'
-                                                    : '#BE185D',
+                                            background: '#F5EFE6',
+                                            color: '#8B5A2B',
+                                            border: '1px solid #E8D9C4',
                                         }}
                                     >
                                         Kandidat 0

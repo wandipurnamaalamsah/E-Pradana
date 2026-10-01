@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
@@ -154,6 +155,19 @@ class DptController extends Controller
             'token_hash' => $tokenHash,
         ]);
 
+        DB::table('audit_logs')->insert([
+            'user_id' => Auth::id(),
+            'action' => 'reset_token',
+            'meta' => json_encode([
+                'voter_id' => $id,
+                'voter_name' => $voter->name,
+                'voter_username' => $voter->username,
+                'by' => Auth::user()?->name ?? 'Admin',
+                'timestamp' => now()->toIso8601String(),
+            ]),
+            'created_at' => now(),
+        ]);
+
         return back()
             ->with('success', "Token untuk {$voter->name} ({$voter->username}) berhasil di-reset!")
             ->with('flash_token', [
@@ -162,6 +176,105 @@ class DptController extends Controller
                 'username' => $voter->username,
                 'token' => $newToken,
             ]);
+    }
+
+    public function resetStatus(int $id): RedirectResponse
+    {
+        $voter = DB::table('voters')->where('id', $id)->first();
+        if (!$voter) {
+            return back()->with('error', 'Data pemilih tidak ditemukan!');
+        }
+
+        DB::table('voters')->where('id', $id)->update([
+            'has_voted' => 0,
+        ]);
+
+        DB::table('audit_logs')->insert([
+            'user_id' => Auth::id(),
+            'action' => 'reset_voter_status',
+            'meta' => json_encode([
+                'voter_id' => $id,
+                'voter_name' => $voter->name,
+                'voter_username' => $voter->username,
+                'by' => Auth::user()?->name ?? 'Admin',
+                'timestamp' => now()->toIso8601String(),
+            ]),
+            'created_at' => now(),
+        ]);
+
+        return back()->with('success', "Status hak suara untuk \"{$voter->name}\" berhasil direset menjadi Belum Memilih!");
+    }
+
+    public function resetAllStatus(Request $request): RedirectResponse
+    {
+        $class = $request->input('class');
+
+        $query = DB::table('voters');
+        if (!empty($class) && $class !== 'all') {
+            $query->where(function ($q) use ($class) {
+                $q->where('class', $class)
+                  ->orWhere('class', 'like', $class . ' %');
+            });
+        }
+
+        $affected = $query->update(['has_voted' => 0]);
+
+        DB::table('audit_logs')->insert([
+            'user_id' => Auth::id(),
+            'action' => 'reset_dpt_status',
+            'meta' => json_encode([
+                'scope' => (!empty($class) && $class !== 'all') ? "Kelas {$class}" : 'Seluruh DPT',
+                'affected_voters' => $affected,
+                'by' => Auth::user()?->name ?? 'Admin',
+                'timestamp' => now()->toIso8601String(),
+            ]),
+            'created_at' => now(),
+        ]);
+
+        $scopeText = (!empty($class) && $class !== 'all') ? "Kelas {$class}" : "Seluruh data DPT";
+        return back()->with('success', "Status hak suara untuk {$scopeText} ({$affected} pemilih) berhasil direset menjadi Belum Memilih!");
+    }
+
+    public function resetAllTokens(Request $request): RedirectResponse
+    {
+        $class = $request->input('class');
+
+        $query = DB::table('voters');
+        if (!empty($class) && $class !== 'all') {
+            $query->where(function ($q) use ($class) {
+                $q->where('class', $class)
+                  ->orWhere('class', 'like', $class . ' %');
+            });
+        }
+
+        $voters = $query->get(['id']);
+        $count = 0;
+
+        foreach ($voters as $v) {
+            $newToken = strtoupper(Str::random(6));
+            $tokenHash = hash('sha256', $newToken);
+
+            DB::table('voters')->where('id', $v->id)->update([
+                'token' => $newToken,
+                'token_hash' => $tokenHash,
+            ]);
+            $count++;
+        }
+
+        DB::table('audit_logs')->insert([
+            'user_id' => Auth::id(),
+            'action' => 'reset_all_tokens',
+            'meta' => json_encode([
+                'scope' => (!empty($class) && $class !== 'all') ? "Kelas {$class}" : 'Seluruh DPT',
+                'affected_voters' => $count,
+                'by' => Auth::user()?->name ?? 'Admin',
+                'timestamp' => now()->toIso8601String(),
+            ]),
+            'created_at' => now(),
+        ]);
+
+        $scopeText = (!empty($class) && $class !== 'all') ? "Kelas {$class}" : "Seluruh data DPT";
+        return back()->with('success', "Token akses untuk {$scopeText} ({$count} siswa) berhasil di-reset dan diacak ulang!");
     }
 
     public function destroy(int $id): RedirectResponse
@@ -181,6 +294,17 @@ class DptController extends Controller
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         DB::table('voters')->truncate();
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
+        DB::table('audit_logs')->insert([
+            'user_id' => Auth::id(),
+            'action' => 'reset_database',
+            'meta' => json_encode([
+                'target' => 'voters (DPT)',
+                'by' => Auth::user()?->name ?? 'Admin',
+                'timestamp' => now()->toIso8601String(),
+            ]),
+            'created_at' => now(),
+        ]);
 
         return back()->with('success', 'Seluruh data DPT berhasil dikosongkan!');
     }
